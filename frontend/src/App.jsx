@@ -92,6 +92,9 @@ function App() {
       return undefined
     }
 
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
     const closeOnEscape = (event) => {
       if (event.key === 'Escape') {
         setSelectedProduct(null)
@@ -99,8 +102,26 @@ function App() {
     }
 
     window.addEventListener('keydown', closeOnEscape)
-    return () => window.removeEventListener('keydown', closeOnEscape)
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape)
+      document.body.style.overflow = previousOverflow
+    }
   }, [selectedProduct])
+
+  useEffect(() => {
+    const sections = ['inicio', 'catalogo', 'rendimiento', 'panel']
+      .map((sectionId) => document.getElementById(sectionId))
+      .filter(Boolean)
+    const observer = new IntersectionObserver((entries) => {
+      const visibleSection = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((first, second) => second.intersectionRatio - first.intersectionRatio)[0]
+      if (visibleSection) setActiveSection(visibleSection.target.id)
+    }, { rootMargin: '-18% 0px -62% 0px', threshold: [0.15, 0.4, 0.7] })
+
+    sections.forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
+  }, [])
 
   const categories = useMemo(
     () => [...new Set(products.map((product) => product.categoria))].sort(),

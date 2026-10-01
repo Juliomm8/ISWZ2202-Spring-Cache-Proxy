@@ -14,7 +14,7 @@ function ProductModal({ product, loading, error, duration, history, onClose, onR
         aria-labelledby="product-modal-title"
         onMouseDown={(event) => event.stopPropagation()}
       >
-        <button className="modal-close" type="button" aria-label="Cerrar detalles" onClick={onClose}>
+        <button className="modal-close" autoFocus type="button" aria-label="Cerrar detalles" onClick={onClose}>
           ×
         </button>
         <div className="modal-accent" aria-hidden="true">◆</div>

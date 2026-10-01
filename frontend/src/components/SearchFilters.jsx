@@ -7,7 +7,7 @@ function SearchFilters({ search, category, categories, sortOrder, viewMode, resu
         <label className="search-field">
           <span className="sr-only">Buscar producto</span>
           <span aria-hidden="true">⌕</span>
-          <input type="search" placeholder="Buscar producto..." value={search} onChange={(event) => onSearchChange(event.target.value)} />
+          <input autoFocus type="search" placeholder="Buscar producto..." value={search} onChange={(event) => onSearchChange(event.target.value)} />
         </label>
         <label className="select-field">
           <span className="sr-only">Filtrar por categoría</span>
@@ -21,7 +21,7 @@ function SearchFilters({ search, category, categories, sortOrder, viewMode, resu
         <span className="results-count"><strong>{resultCount}</strong> {resultCount === 1 ? 'producto' : 'productos'} encontrados</span>
         <label className="sort-field">
           <span className="sr-only">Ordenar productos</span>
-          <select value={sortOrder} onChange={(event) => onSortChange(event.target.value)}>
+          <select title="Ordenar resultados" value={sortOrder} onChange={(event) => onSortChange(event.target.value)}>
             <option value="default">Ordenar por</option>
             <option value="name-asc">Nombre A-Z</option>
             <option value="name-desc">Nombre Z-A</option>
