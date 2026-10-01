@@ -16,6 +16,13 @@ function SearchFilters({ search, category, categories, sortOrder, viewMode, resu
             {categories.map((item) => <option key={item} value={item}>{item}</option>)}
           </select>
         </label>
+        <div className="category-chips" aria-label="Categorías rápidas">
+          {['Todas', ...categories].map((item) => (
+            <button className={category === item ? 'is-active' : ''} type="button" key={item} onClick={() => onCategoryChange(item)}>
+              {item === 'Todas' ? 'Todos' : item}
+            </button>
+          ))}
+        </div>
       </div>
       <div className="filter-tools">
         <span className="results-count"><strong>{resultCount}</strong> {resultCount === 1 ? 'producto' : 'productos'} encontrados</span>

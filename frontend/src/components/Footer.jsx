@@ -3,7 +3,7 @@ function Footer() {
     <footer className="footer">
       <div>
         <strong>Product Hub</strong>
-        <span>Proyecto académico · Spring Boot + React</span>
+        <span>Proyecto académico de Diseño y Arquitectura de Software</span>
       </div>
       <div className="footer-techs">
         <span>Spring Boot</span>

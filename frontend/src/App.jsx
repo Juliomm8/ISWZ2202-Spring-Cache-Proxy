@@ -12,6 +12,8 @@ import Toast from './components/Toast.jsx'
 import Reveal from './components/Reveal.jsx'
 import CursorGlow from './components/CursorGlow.jsx'
 import DemoTour from './components/DemoTour.jsx'
+import MobileNav from './components/MobileNav.jsx'
+import ScrollProgress from './components/ScrollProgress.jsx'
 import useDemoTour from './hooks/useDemoTour.js'
 import { obtenerProductoPorId, obtenerProductos } from './services/productoService.js'
 
@@ -237,8 +239,10 @@ function App() {
 
   return (
     <div className="app-shell">
+      <ScrollProgress />
       <CursorGlow />
-      <Navbar apiConnected={apiConnected} activeSection={activeSection} onNavigate={navigateTo} isDark={theme === 'dark'} isScrolled={isScrolled} onToggleTheme={() => setTheme((currentTheme) => currentTheme === 'dark' ? 'light' : 'dark')} />
+      <Navbar apiConnected={apiConnected} apiLoading={loading} activeSection={activeSection} onNavigate={navigateTo} isDark={theme === 'dark'} isScrolled={isScrolled} onToggleTheme={() => setTheme((currentTheme) => currentTheme === 'dark' ? 'light' : 'dark')} />
+      <MobileNav activeSection={activeSection} onNavigate={navigateTo} />
       <main className="page-content">
         <section id="inicio" className="page-section hero-section">
           <Reveal className="hero-reveal">
