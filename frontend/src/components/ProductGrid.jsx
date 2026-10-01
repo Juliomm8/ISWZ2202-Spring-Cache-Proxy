@@ -2,7 +2,7 @@ import ProductCard from './ProductCard.jsx'
 import ProductTable from './ProductTable.jsx'
 import SkeletonCard from './SkeletonCard.jsx'
 
-function ProductGrid({ products, loading, viewMode, onViewDetails, onClearFilters }) {
+function ProductGrid({ products, loading, viewMode, onViewDetails, onClearFilters, highlightedId }) {
   if (loading) {
     return (
       <div className="product-grid" aria-label="Cargando productos">
@@ -30,7 +30,7 @@ function ProductGrid({ products, loading, viewMode, onViewDetails, onClearFilter
     <div className="catalog-view cards-view">
       <div className="product-grid">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} onViewDetails={onViewDetails} />
+          <ProductCard key={product.id} product={product} onViewDetails={onViewDetails} isDemoTarget={product.id === highlightedId} />
         ))}
       </div>
     </div>

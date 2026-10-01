@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 
-function Hero({ onExplore, onPerformance, onRefresh, loading, lastFetchDuration }) {
+function Hero({ onExplore, onPerformance, onStartDemo, onRefresh, loading, lastFetchDuration }) {
   const heroRef = useRef(null)
   const pointerRef = useRef({ x: 0, y: 0 })
   const frameRef = useRef(0)
@@ -48,6 +48,9 @@ function Hero({ onExplore, onPerformance, onRefresh, loading, lastFetchDuration 
         <div className="hero-actions hero-stagger hero-stagger-five">
           <button className="button button-primary" type="button" onClick={onExplore}>
             Explorar productos <span aria-hidden="true">→</span>
+          </button>
+          <button className="button button-demo" type="button" onClick={onStartDemo}>
+            Iniciar demo <span aria-hidden="true">✦</span>
           </button>
           <button className="button button-ghost" type="button" onClick={onPerformance}>
             Probar rendimiento

@@ -11,6 +11,8 @@ import PerformanceSection from './components/PerformanceSection.jsx'
 import Toast from './components/Toast.jsx'
 import Reveal from './components/Reveal.jsx'
 import CursorGlow from './components/CursorGlow.jsx'
+import DemoTour from './components/DemoTour.jsx'
+import useDemoTour from './hooks/useDemoTour.js'
 import { obtenerProductoPorId, obtenerProductos } from './services/productoService.js'
 
 function App() {
@@ -31,6 +33,12 @@ function App() {
   const [activeSection, setActiveSection] = useState('inicio')
   const [isScrolled, setIsScrolled] = useState(false)
   const [toast, setToast] = useState(null)
+  const demo = useDemoTour()
+  const [demoProductId, setDemoProductId] = useState(null)
+  const [demoFirstDuration, setDemoFirstDuration] = useState(null)
+  const [demoSecondDuration, setDemoSecondDuration] = useState(null)
+  const [demoLoading, setDemoLoading] = useState(false)
+  const [demoError, setDemoError] = useState('')
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -89,6 +97,31 @@ function App() {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
+  const startDemo = useCallback(() => {
+    const firstProduct = products[0]
+    if (!firstProduct) {
+      showToast('El catálogo aún no tiene productos', 'error')
+      return
+    }
+    setDemoProductId(firstProduct.id)
+    setDemoFirstDuration(null)
+    setDemoSecondDuration(null)
+    setDemoError('')
+    demo.start()
+  }, [demo, products, showToast])
+
+  const handleDemoNext = useCallback(() => {
+    if (demo.step === 0) navigateTo('catalogo')
+    if (demo.step === 1) navigateTo('catalogo')
+    demo.next()
+  }, [demo, navigateTo])
+
+  const handleDemoPrevious = useCallback(() => {
+    if (demo.step === 1) navigateTo('inicio')
+    if (demo.step >= 2) navigateTo('catalogo')
+    demo.previous()
+  }, [demo, navigateTo])
+
   const runProductQuery = useCallback(async (id) => {
     const result = await obtenerProductoPorId(id)
     const duration = Math.round(result.duration)
@@ -100,7 +133,7 @@ function App() {
     return result
   }, [showToast])
 
-  const loadProductDetails = useCallback(async (id) => {
+  const loadProductDetails = useCallback(async (id, rethrow = false) => {
     const productInCatalog = products.find((product) => product.id === id)
     setSelectedProduct(productInCatalog ?? { id, nombre: 'Producto', categoria: '—', precio: 0 })
     setDetailLoading(true)
@@ -109,12 +142,33 @@ function App() {
     try {
       const result = await runProductQuery(id)
       setSelectedProduct(result.data)
-    } catch {
+      return result
+    } catch (requestError) {
       setDetailError('No se pudo consultar el detalle del producto.')
+      if (rethrow) throw requestError
     } finally {
       setDetailLoading(false)
     }
   }, [products, runProductQuery])
+
+  const handleDemoQuery = useCallback(async () => {
+    if (!demoProductId) return
+    setDemoLoading(true)
+    setDemoError('')
+    try {
+      if (demo.step === 2) {
+        const result = await loadProductDetails(demoProductId, true)
+        setDemoFirstDuration(Math.round(result.duration))
+      } else {
+        const result = await runProductQuery(demoProductId)
+        setDemoSecondDuration(Math.round(result.duration))
+      }
+    } catch {
+      setDemoError('No se pudo completar la consulta real. Revisa que el backend esté disponible.')
+    } finally {
+      setDemoLoading(false)
+    }
+  }, [demo.step, demoProductId, loadProductDetails, runProductQuery])
 
   useEffect(() => {
     if (!selectedProduct) {
@@ -191,6 +245,7 @@ function App() {
             <Hero
               onExplore={() => navigateTo('catalogo')}
               onPerformance={() => navigateTo('rendimiento')}
+              onStartDemo={startDemo}
               onRefresh={loadProducts}
               loading={loading}
               lastFetchDuration={lastFetchDuration}
@@ -236,7 +291,7 @@ function App() {
                   onSortChange={setSortOrder}
                   onViewChange={setViewMode}
                 />
-                <ProductGrid products={filteredProducts} loading={loading} viewMode={viewMode} onViewDetails={loadProductDetails} onClearFilters={clearFilters} />
+                <ProductGrid products={filteredProducts} loading={loading} viewMode={viewMode} onViewDetails={loadProductDetails} onClearFilters={clearFilters} highlightedId={demo.isOpen ? demoProductId : null} />
               </>
             )}
           </Reveal>
@@ -270,6 +325,20 @@ function App() {
         onRefresh={() => loadProductDetails(selectedProduct.id)}
       />
       <Toast toast={toast} onDismiss={dismissToast} />
+      <DemoTour
+        isOpen={demo.isOpen}
+        step={demo.step}
+        product={products.find((product) => product.id === demoProductId)}
+        firstDuration={demoFirstDuration}
+        secondDuration={demoSecondDuration}
+        loading={demoLoading || detailLoading}
+        error={demoError}
+        onNext={handleDemoNext}
+        onPrevious={handleDemoPrevious}
+        onExit={demo.exit}
+        onQuery={handleDemoQuery}
+        onReturnHome={() => { demo.exit(); navigateTo('inicio') }}
+      />
     </div>
   )
 }

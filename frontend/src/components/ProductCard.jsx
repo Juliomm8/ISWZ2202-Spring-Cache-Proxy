@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import ProductImage from './ProductImage.jsx'
 
-function ProductCard({ product, onViewDetails }) {
+function ProductCard({ product, onViewDetails, isDemoTarget = false }) {
   const cardRef = useRef(null)
 
   const handlePointerMove = (event) => {
@@ -31,6 +31,7 @@ function ProductCard({ product, onViewDetails }) {
       ref={cardRef}
       className="product-card"
       data-category={product.categoria}
+      data-demo-product={isDemoTarget ? product.id : undefined}
       onPointerMove={handlePointerMove}
       onPointerLeave={resetPointer}
     >
