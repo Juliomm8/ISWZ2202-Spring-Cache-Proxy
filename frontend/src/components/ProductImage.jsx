@@ -6,7 +6,7 @@ function ProductImage({ product, className = '', eager = false }) {
   const media = getProductMedia(product)
 
   return (
-    <div className={`product-image ${imageError ? 'is-fallback' : ''} ${className}`}>
+    <div className={`product-image ${imageError ? 'is-fallback' : ''} ${className}`} data-category={product.categoria}>
       {!imageError && media.image ? (
         <img
           src={media.image}
