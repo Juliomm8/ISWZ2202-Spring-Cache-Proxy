@@ -1,6 +1,35 @@
+import { useRef } from 'react'
+
 function Hero({ onExplore, onPerformance, onRefresh, loading, lastFetchDuration }) {
+  const heroRef = useRef(null)
+  const pointerRef = useRef({ x: 0, y: 0 })
+  const frameRef = useRef(0)
+
+  const updateParallax = () => {
+    frameRef.current = 0
+    if (!heroRef.current) return
+    const { x, y } = pointerRef.current
+    heroRef.current.style.setProperty('--hero-parallax-x', `${x}px`)
+    heroRef.current.style.setProperty('--hero-parallax-y', `${y}px`)
+  }
+
+  const handlePointerMove = (event) => {
+    if (!heroRef.current || window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const bounds = heroRef.current.getBoundingClientRect()
+    pointerRef.current = {
+      x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 10,
+      y: ((event.clientY - bounds.top) / bounds.height - 0.5) * 10,
+    }
+    if (!frameRef.current) frameRef.current = window.requestAnimationFrame(updateParallax)
+  }
+
+  const resetParallax = () => {
+    pointerRef.current = { x: 0, y: 0 }
+    if (!frameRef.current) frameRef.current = window.requestAnimationFrame(updateParallax)
+  }
+
   return (
-    <section className="hero">
+    <section ref={heroRef} className="hero" onPointerMove={handlePointerMove} onPointerLeave={resetParallax}>
       <div className="hero-ambient" aria-hidden="true">
         <span className="hero-orb hero-orb-one" />
         <span className="hero-orb hero-orb-two" />

@@ -2079,6 +2079,16 @@ select:focus-visible {
   z-index: 1;
 }
 
+.hero-copy {
+  translate: calc(var(--hero-parallax-x, 0px) * -0.22) calc(var(--hero-parallax-y, 0px) * -0.22);
+  transition: translate 420ms ease;
+}
+
+.hero-visual {
+  translate: calc(var(--hero-parallax-x, 0px) * 0.32) calc(var(--hero-parallax-y, 0px) * 0.32);
+  transition: translate 420ms ease;
+}
+
 .hero-ambient {
   position: absolute;
   z-index: -1;
@@ -2315,6 +2325,8 @@ select:focus-visible {
 
   .reveal { opacity: 1 !important; }
   .cursor-glow { display: none !important; }
+  .hero-copy,
+  .hero-visual { translate: none !important; }
 }
 
 @media (max-width: 640px) {
@@ -2487,5 +2499,186 @@ select:focus-visible {
   .brand-mark,
   .stat-card {
     transition: none !important;
+  }
+}
+
+/* Final visual polish: theme transition, technical texture and section wayfinding. */
+body,
+.app-shell,
+.navbar,
+.page-section,
+.stat-card,
+.product-card,
+.filters,
+.panel-card,
+.simulator-card,
+.performance-card,
+.product-table-wrapper,
+.product-modal,
+.theme-toggle {
+  transition: background-color 360ms ease, color 360ms ease, border-color 360ms ease, box-shadow 360ms ease;
+}
+
+body {
+  background-image:
+    linear-gradient(rgba(99, 102, 241, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 90% 0%, rgba(99, 102, 241, 0.1), transparent 30rem);
+  background-size: 34px 34px, 34px 34px, auto;
+}
+
+[data-theme="dark"] body {
+  background-image:
+    linear-gradient(rgba(129, 140, 248, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 140, 248, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 90% 0%, rgba(79, 70, 229, 0.2), transparent 30rem);
+}
+
+.catalog-section,
+.placeholder-section {
+  position: relative;
+}
+
+.catalog-section::before,
+.placeholder-section::before {
+  position: absolute;
+  top: -25px;
+  left: 4px;
+  color: var(--primary);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  opacity: 0.75;
+}
+
+.catalog-section::before { content: '01  /  CATALOGO'; }
+#rendimiento::before { content: '02  /  RENDIMIENTO'; }
+#panel::before { content: '03  /  PANEL'; }
+
+.panel-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 0 22px 18px;
+}
+
+.panel-metric {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--surface) 82%, var(--background));
+}
+
+.panel-metric span,
+.panel-metric strong,
+.panel-metric small {
+  display: block;
+}
+
+.panel-metric span,
+.panel-metric small {
+  color: var(--text-secondary);
+  font-size: 0.62rem;
+}
+
+.panel-metric strong {
+  margin: 5px 0 3px;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.panel-sparkline {
+  display: flex;
+  align-items: end;
+  gap: 3px;
+  height: 19px;
+  margin-top: 5px;
+}
+
+.panel-sparkline i {
+  flex: 1;
+  min-width: 3px;
+  height: 45%;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(#a5b4fc, #6366f1);
+  animation: sparkline-breathe 2.4s ease-in-out infinite;
+}
+
+.panel-sparkline i:nth-child(2) { height: 70%; animation-delay: 120ms; }
+.panel-sparkline i:nth-child(3) { height: 52%; animation-delay: 240ms; }
+.panel-sparkline i:nth-child(4) { height: 88%; animation-delay: 360ms; }
+.panel-sparkline i:nth-child(5) { height: 66%; animation-delay: 480ms; }
+.panel-sparkline i:nth-child(6) { height: 96%; animation-delay: 600ms; }
+
+.simulation-results div {
+  transition: transform 180ms ease, background-color 220ms ease;
+}
+
+.simulation-results div:hover { transform: translateY(-2px); }
+
+.simulation-results strong {
+  animation: simulation-value-in 360ms ease both;
+}
+
+.simulation-arrow {
+  display: inline-block;
+  margin-left: 2px;
+  font-size: 0.95em;
+  animation: simulation-arrow-in 360ms ease both;
+}
+
+.simulation-results strong.positive .simulation-arrow { color: #059669; }
+.simulation-results strong.negative .simulation-arrow { color: #dc2626; }
+
+@keyframes sparkline-breathe {
+  50% { opacity: 0.55; transform: scaleY(0.72); transform-origin: bottom; }
+}
+
+@keyframes simulation-value-in {
+  from { opacity: 0.35; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes simulation-arrow-in {
+  from { opacity: 0; transform: translateY(5px) scale(0.7); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 640px) {
+  .catalog-section::before,
+  .placeholder-section::before {
+    top: -18px;
+    left: 0;
+  }
+
+  .panel-metrics { grid-template-columns: 1fr; }
+  .panel-metric-chart { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 8px; }
+  .panel-metric-chart strong { margin: 0; }
+  .panel-metric-chart .panel-sparkline { margin: 0 0 0 auto; width: 120px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  .app-shell,
+  .navbar,
+  .page-section,
+  .stat-card,
+  .product-card,
+  .filters,
+  .panel-card,
+  .simulator-card,
+  .performance-card,
+  .product-table-wrapper,
+  .product-modal,
+  .theme-toggle,
+  .simulation-results div {
+    transition: none !important;
+  }
+
+  .panel-sparkline i,
+  .simulation-results strong,
+  .simulation-arrow {
+    animation: none !important;
   }
 }

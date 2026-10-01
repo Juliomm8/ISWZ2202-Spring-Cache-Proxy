@@ -18,6 +18,8 @@ function PriceSimulator({ products }) {
   const numericSimulatedPrice = Number(simulatedPrice)
   const difference = simulatedPrice === '' ? 0 : numericSimulatedPrice - currentPrice
   const percentage = currentPrice && simulatedPrice !== '' ? (difference / currentPrice) * 100 : 0
+  const trendClass = difference > 0 ? 'positive' : difference < 0 ? 'negative' : ''
+  const trendIcon = difference > 0 ? '↑' : difference < 0 ? '↓' : '→'
 
   return (
     <section className="simulator-card">
@@ -44,8 +46,8 @@ function PriceSimulator({ products }) {
       <div className="simulation-results">
         <div><span>Actual</span><strong>${currentPrice.toFixed(2)}</strong></div>
         <div><span>Simulado</span><strong>{simulatedPrice === '' ? '—' : `$${numericSimulatedPrice.toFixed(2)}`}</strong></div>
-        <div><span>Diferencia</span><strong className={difference > 0 ? 'positive' : difference < 0 ? 'negative' : ''}>{simulatedPrice === '' ? '—' : `${difference >= 0 ? '+' : '-'}$${Math.abs(difference).toFixed(2)}`}</strong></div>
-        <div><span>Cambio</span><strong className={difference > 0 ? 'positive' : difference < 0 ? 'negative' : ''}>{simulatedPrice === '' ? '—' : `${percentage >= 0 ? '+' : ''}${percentage.toFixed(2)}%`}</strong></div>
+        <div><span>Diferencia</span><strong key={`difference-${simulatedPrice}`} className={trendClass}>{simulatedPrice === '' ? '—' : <>{`${difference >= 0 ? '+' : '-'}$${Math.abs(difference).toFixed(2)}`} <span className="simulation-arrow" aria-hidden="true">{trendIcon}</span></>}</strong></div>
+        <div><span>Cambio</span><strong key={`percentage-${simulatedPrice}`} className={trendClass}>{simulatedPrice === '' ? '—' : <>{`${percentage >= 0 ? '+' : ''}${percentage.toFixed(2)}%`} <span className="simulation-arrow" aria-hidden="true">{trendIcon}</span></>}</strong></div>
       </div>
       <p className="simulator-note">Esta simulación solo afecta la interfaz y no modifica la API.</p>
     </section>

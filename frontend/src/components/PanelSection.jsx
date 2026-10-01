@@ -1,7 +1,17 @@
+import { useMemo } from 'react'
 import ProductImage from './ProductImage.jsx'
 import PriceSimulator from './PriceSimulator.jsx'
 
 function PanelSection({ products, onAnalyze }) {
+  const inventoryValue = useMemo(
+    () => products.reduce((total, product) => total + product.precio, 0),
+    [products],
+  )
+  const categoryCount = useMemo(
+    () => new Set(products.map((product) => product.categoria)).size,
+    [products],
+  )
+
   return (
     <div className="panel-layout">
       <section className="panel-card panel-overview">
@@ -12,6 +22,11 @@ function PanelSection({ products, onAnalyze }) {
           </div>
           <span className="read-only-badge">Solo lectura · GET</span>
         </div>
+          <div className="panel-metrics" aria-label="Métricas del inventario">
+            <div className="panel-metric"><span>Registros</span><strong>{products.length}</strong><small>productos activos</small></div>
+            <div className="panel-metric"><span>Valor inventario</span><strong>${inventoryValue.toFixed(2)}</strong><small>lectura local</small></div>
+            <div className="panel-metric panel-metric-chart"><span>Categorías</span><strong>{categoryCount}</strong><div className="panel-sparkline" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div></div>
+          </div>
         <div className="panel-table-wrapper">
           <table className="panel-table">
             <thead>
