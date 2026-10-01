@@ -1,3 +1,5 @@
+import ProductImage from './ProductImage.jsx'
+
 function ProductModal({ product, loading, error, duration, history, onClose, onRefresh }) {
   if (!product) {
     return null
@@ -18,6 +20,7 @@ function ProductModal({ product, loading, error, duration, history, onClose, onR
         <div className="modal-accent" aria-hidden="true">◆</div>
         <span className="eyebrow">Detalle del producto</span>
         <h2 id="product-modal-title">{product.nombre}</h2>
+        <ProductImage product={product} className="modal-product-image" eager />
         <div className="detail-list">
           <div>
             <span>Categoría</span>

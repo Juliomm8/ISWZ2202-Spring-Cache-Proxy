@@ -1,22 +1,17 @@
-const categoryIcons = {
-  Perifericos: '⌨',
-  Pantallas: '▣',
-  Computadores: '▱',
-  Audio: '◉',
-}
+import ProductImage from './ProductImage.jsx'
 
 function ProductCard({ product, onViewDetails }) {
   return (
     <article className="product-card">
-      <div className="product-icon" aria-hidden="true">
-        {categoryIcons[product.categoria] || '◆'}
-      </div>
       <div className="product-content">
-        <div className="product-heading">
-          <span className="category-label">{product.categoria}</span>
-          <span className="product-id">#{product.id}</span>
+        <ProductImage product={product} />
+        <div className="product-card-body">
+          <div className="product-heading">
+            <span className="category-label">{product.categoria}</span>
+            <span className="product-id">ID #{product.id}</span>
+          </div>
+          <h3>{product.nombre}</h3>
         </div>
-        <h3>{product.nombre}</h3>
         <div className="product-footer">
           <strong>${product.precio.toFixed(2)}</strong>
           <button className="button button-secondary" type="button" onClick={() => onViewDetails(product.id)}>

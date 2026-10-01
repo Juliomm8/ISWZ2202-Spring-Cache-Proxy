@@ -543,9 +543,9 @@ button {
 }
 
 .product-card {
-  display: flex;
-  gap: 16px;
-  padding: 20px;
+  display: block;
+  overflow: hidden;
+  padding: 0;
   box-shadow: 0 8px 25px rgba(15, 23, 42, 0.03);
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
@@ -569,7 +569,10 @@ button {
 
 .product-content {
   min-width: 0;
-  flex: 1;
+}
+
+.product-card-body {
+  padding: 18px 20px 0;
 }
 
 .product-heading,
@@ -584,14 +587,82 @@ button {
 }
 
 .product-card h3 {
-  margin: 12px 0 22px;
+  margin: 10px 0 0;
   color: #1e293b;
   font-size: 1.05rem;
+}
+
+.product-image {
+  position: relative;
+  display: grid;
+  height: 206px;
+  overflow: hidden;
+  place-items: center;
+  color: #c7d2fe;
+  background: linear-gradient(135deg, #1e1b4b, #4338ca);
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 450ms ease;
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.045);
+}
+
+.product-image::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.34), transparent 50%);
+  content: '';
+  pointer-events: none;
+}
+
+.product-image.is-fallback {
+  background: radial-gradient(circle at 30% 20%, #6366f1, #1e1b4b 70%);
+}
+
+.fallback-icon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 74px;
+  height: 74px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 22px;
+  color: #e0e7ff;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 2.4rem;
+  backdrop-filter: blur(8px);
+}
+
+.image-shine {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: -80%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  transform: skewX(-20deg);
+  transition: left 600ms ease;
+}
+
+.product-card:hover .image-shine {
+  left: 130%;
 }
 
 .product-footer strong {
   color: #0f172a;
   font-size: 1.1rem;
+}
+
+.product-footer {
+  padding: 18px 20px 20px;
 }
 
 .footer {
@@ -657,9 +728,15 @@ button {
 
 .product-modal h2 {
   max-width: 380px;
-  margin: 10px 0 24px;
+  margin: 10px 0 18px;
   color: var(--text);
   font-size: 1.8rem;
+}
+
+.modal-product-image {
+  height: 180px;
+  margin-bottom: 20px;
+  border-radius: 16px;
 }
 
 .detail-list {
