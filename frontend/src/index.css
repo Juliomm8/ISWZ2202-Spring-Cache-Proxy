@@ -3566,6 +3566,52 @@ body {
   }
 }
 
+@media (max-width: 640px) {
+  .product-table-wrapper {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .product-table,
+  .product-table tbody,
+  .product-table tr,
+  .product-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .product-table { min-width: 0; }
+  .product-table thead { display: none; }
+
+  .product-table tbody tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 10px 14px;
+    background: var(--surface);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+  }
+
+  .product-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .product-table td:last-child { border-bottom: 0; }
+  .product-table td::before { color: var(--text-secondary); font-size: 0.65rem; content: attr(data-label); }
+  .product-table td:first-child { display: block; }
+  .product-table td:first-child::before { display: none; }
+  .product-table .table-product { min-width: 0; }
+  .product-table td:last-child::before { content: ''; }
+  .product-table .table-action { padding: 0; }
+}
+
 /* Navigation and layout rhythm. */
 :root {
   --container-width: 1180px;

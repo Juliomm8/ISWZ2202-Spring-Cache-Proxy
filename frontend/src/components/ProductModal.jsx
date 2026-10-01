@@ -5,11 +5,13 @@ function ProductModal({ product, loading, error, duration, history, onClose, onR
   const [isClosing, setIsClosing] = useState(false)
   const [showImage, setShowImage] = useState(false)
   const closeButtonRef = useRef(null)
+  const returnFocusRef = useRef(null)
 
   useEffect(() => {
     if (!product) return undefined
     setIsClosing(false)
     setShowImage(false)
+    if (document.activeElement && document.activeElement !== document.body) returnFocusRef.current = document.activeElement
     const imageTimer = window.setTimeout(() => setShowImage(true), 120)
     const focusInitialControl = window.requestAnimationFrame(() => closeButtonRef.current?.focus())
     const handleKeyDown = (event) => {
@@ -40,7 +42,10 @@ function ProductModal({ product, loading, error, duration, history, onClose, onR
   const requestClose = () => {
     if (isClosing) return
     setIsClosing(true)
-    window.setTimeout(onClose, 220)
+    window.setTimeout(() => {
+      onClose()
+      window.requestAnimationFrame(() => returnFocusRef.current?.focus())
+    }, 220)
   }
 
   const relativeTime = (timestamp) => {

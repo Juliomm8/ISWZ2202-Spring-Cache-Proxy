@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const stepCopy = [
   {
@@ -30,6 +30,36 @@ const stepCopy = [
 
 function DemoTour({ isOpen, step, product, firstDuration, secondDuration, loading, error, onNext, onPrevious, onExit, onQuery, onReturnHome }) {
   const [spotlight, setSpotlight] = useState(null)
+  const cardRef = useRef(null)
+
+  useEffect(() => {
+    if (!isOpen) return undefined
+    const focusFrame = window.requestAnimationFrame(() => cardRef.current?.querySelector('.demo-primary-action, .demo-exit')?.focus())
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onExit()
+        return
+      }
+      if (event.key !== 'Tab' || !cardRef.current) return
+      const focusable = [...cardRef.current.querySelectorAll('button:not(:disabled)')]
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.cancelAnimationFrame(focusFrame)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, onExit, step])
 
   useEffect(() => {
     if (!isOpen) return undefined
@@ -74,7 +104,7 @@ function DemoTour({ isOpen, step, product, firstDuration, secondDuration, loadin
     <div className="demo-layer" role="dialog" aria-modal="true" aria-labelledby="demo-title">
       {!spotlight && <div className="demo-backdrop" aria-hidden="true" />}
       {spotlight && <div className="demo-spotlight" style={spotlight} aria-hidden="true" />}
-      <section className={`demo-card demo-step-${step}`}>
+      <section ref={cardRef} className={`demo-card demo-step-${step}`}>
         <div className="demo-card-top">
           <span className="eyebrow">Modo demostración</span>
           <button className="demo-exit" type="button" onClick={onExit}>Salir</button>

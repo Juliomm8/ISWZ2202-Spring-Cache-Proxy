@@ -16,16 +16,16 @@ function ProductTable({ products, onViewDetails }) {
         <tbody>
           {products.map((product) => (
             <tr key={product.id}>
-              <td>
+            <td data-label="Producto">
                 <div className="table-product">
                   <ProductImage product={product} />
                   <strong>{product.nombre}</strong>
                 </div>
               </td>
-              <td><span className="table-category">{product.categoria}</span></td>
-              <td><strong>${product.precio.toFixed(2)}</strong></td>
-              <td><span className="product-id">#{product.id}</span></td>
-              <td><button className="table-action" type="button" onClick={() => onViewDetails(product.id)}>Ver detalles →</button></td>
+            <td data-label="Categoría"><span className="table-category">{product.categoria}</span></td>
+            <td data-label="Precio"><strong>${product.precio.toFixed(2)}</strong></td>
+            <td data-label="ID"><span className="product-id">#{product.id}</span></td>
+            <td data-label=""><button className="table-action" type="button" onClick={() => onViewDetails(product.id)}>Ver detalles →</button></td>
             </tr>
           ))}
         </tbody>

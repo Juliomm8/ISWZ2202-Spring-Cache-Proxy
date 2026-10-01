@@ -109,8 +109,18 @@ function App() {
     setDemoFirstDuration(null)
     setDemoSecondDuration(null)
     setDemoError('')
+    setSearch('')
+    setCategory('Todas')
+    setSortOrder('default')
+    setViewMode('cards')
     demo.start()
   }, [demo, products, showToast])
+
+  const exitDemo = useCallback(() => {
+    demo.exit()
+    setSelectedProduct(null)
+    setDemoLoading(false)
+  }, [demo])
 
   const handleDemoNext = useCallback(() => {
     if (demo.step === 0) navigateTo('catalogo')
@@ -339,9 +349,9 @@ function App() {
         error={demoError}
         onNext={handleDemoNext}
         onPrevious={handleDemoPrevious}
-        onExit={demo.exit}
+        onExit={exitDemo}
         onQuery={handleDemoQuery}
-        onReturnHome={() => { demo.exit(); navigateTo('inicio') }}
+        onReturnHome={() => { exitDemo(); navigateTo('inicio') }}
       />
     </div>
   )
