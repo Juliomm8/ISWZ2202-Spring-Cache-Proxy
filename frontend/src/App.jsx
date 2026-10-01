@@ -6,6 +6,7 @@ import SearchFilters from './components/SearchFilters.jsx'
 import ProductGrid from './components/ProductGrid.jsx'
 import ProductModal from './components/ProductModal.jsx'
 import Footer from './components/Footer.jsx'
+import PanelSection from './components/PanelSection.jsx'
 import { obtenerProductoPorId, obtenerProductos } from './services/productoService.js'
 
 function App() {
@@ -171,9 +172,14 @@ function App() {
           <p>Comprueba el comportamiento de las consultas y el caché del backend desde el detalle de cada producto.</p>
         </section>
         <section id="panel" className="page-section placeholder-section">
-          <span className="eyebrow eyebrow-dark">Vista general</span>
-          <h2>Panel</h2>
-          <p>Un panel informativo del catálogo estará disponible en esta sección.</p>
+          <div className="section-heading panel-section-heading">
+            <div>
+              <span className="eyebrow eyebrow-dark">Vista general</span>
+              <h2>Panel</h2>
+            </div>
+            <span className="section-caption">Monitorea el catálogo sin modificar la API</span>
+          </div>
+          <PanelSection products={products} onAnalyze={loadProductDetails} />
         </section>
       </main>
       <Footer />

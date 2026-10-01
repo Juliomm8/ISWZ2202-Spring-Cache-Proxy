@@ -441,6 +441,197 @@ button {
   font-size: 0.8rem;
 }
 
+.panel-section-heading {
+  margin-top: 0;
+}
+
+.panel-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.85fr);
+  gap: 18px;
+}
+
+.panel-card,
+.simulator-card {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.03);
+}
+
+.panel-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 22px 22px 18px;
+}
+
+.panel-card-heading h3 {
+  margin: 8px 0 0;
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+.read-only-badge,
+.local-badge {
+  border-radius: 999px;
+  padding: 6px 9px;
+  color: #047857;
+  background: #ecfdf5;
+  font-size: 0.67rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.panel-table-wrapper {
+  overflow-x: auto;
+  border-top: 1px solid var(--border);
+}
+
+.panel-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.panel-table th,
+.panel-table td {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+}
+
+.panel-table th {
+  color: var(--text-secondary);
+  background: #f8fafc;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.panel-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.panel-table .table-product {
+  min-width: 190px;
+}
+
+.panel-table .table-product strong,
+.panel-table td strong {
+  color: var(--text);
+}
+
+.inventory-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #059669;
+  white-space: nowrap;
+}
+
+.inventory-status i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.simulator-card {
+  padding-bottom: 20px;
+}
+
+.simulator-description,
+.simulator-note {
+  margin: 0 22px 20px;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.simulator-note {
+  margin: 18px 22px 0;
+  color: var(--primary);
+  font-size: 0.68rem;
+}
+
+.simulator-fields {
+  display: grid;
+  gap: 12px;
+  padding: 0 22px;
+}
+
+.simulator-fields label > span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+}
+
+.simulator-fields select,
+.price-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 10px;
+  outline-color: var(--primary);
+  color: var(--text);
+  background: var(--surface);
+  font-size: 0.78rem;
+}
+
+.price-input {
+  display: flex;
+  gap: 6px;
+}
+
+.price-input span {
+  color: var(--text-secondary);
+}
+
+.price-input input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: var(--text);
+  background: transparent;
+}
+
+.simulation-results {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 20px 22px 0;
+}
+
+.simulation-results div {
+  padding: 11px;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.simulation-results span,
+.simulation-results strong {
+  display: block;
+}
+
+.simulation-results span {
+  margin-bottom: 5px;
+  color: var(--text-secondary);
+  font-size: 0.65rem;
+}
+
+.simulation-results strong {
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.simulation-results strong.positive { color: #059669; }
+.simulation-results strong.negative { color: #dc2626; }
+
 .placeholder-section {
   margin-top: 30px;
   border: 1px dashed var(--border);
@@ -1084,6 +1275,10 @@ button {
 
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .panel-layout {
+    grid-template-columns: 1fr;
   }
 }
 
