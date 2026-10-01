@@ -10,6 +10,10 @@ function PriceSimulator({ products }) {
     }
   }, [products, selectedId])
 
+  useEffect(() => {
+    setSimulatedPrice('')
+  }, [selectedId])
+
   const selectedProduct = useMemo(
     () => products.find((product) => product.id === Number(selectedId)),
     [products, selectedId],
@@ -20,6 +24,7 @@ function PriceSimulator({ products }) {
   const percentage = currentPrice && simulatedPrice !== '' ? (difference / currentPrice) * 100 : 0
   const trendClass = difference > 0 ? 'positive' : difference < 0 ? 'negative' : ''
   const trendIcon = difference > 0 ? '↑' : difference < 0 ? '↓' : '→'
+  const visualMax = Math.max(currentPrice, simulatedPrice === '' ? currentPrice : numericSimulatedPrice, 1)
 
   return (
     <section className="simulator-card">
@@ -48,6 +53,10 @@ function PriceSimulator({ products }) {
         <div><span>Simulado</span><strong>{simulatedPrice === '' ? '—' : `$${numericSimulatedPrice.toFixed(2)}`}</strong></div>
         <div><span>Diferencia</span><strong key={`difference-${simulatedPrice}`} className={trendClass}>{simulatedPrice === '' ? '—' : <>{`${difference >= 0 ? '+' : '-'}$${Math.abs(difference).toFixed(2)}`} <span className="simulation-arrow" aria-hidden="true">{trendIcon}</span></>}</strong></div>
         <div><span>Cambio</span><strong key={`percentage-${simulatedPrice}`} className={trendClass}>{simulatedPrice === '' ? '—' : <>{`${percentage >= 0 ? '+' : ''}${percentage.toFixed(2)}%`} <span className="simulation-arrow" aria-hidden="true">{trendIcon}</span></>}</strong></div>
+      </div>
+      <div className="simulation-bars" aria-label="Comparación visual de precios">
+        <div className="simulation-bar-row"><span>Actual</span><div><i style={{ '--simulation-width': `${(currentPrice / visualMax) * 100}%` }} /></div><strong>${currentPrice.toFixed(2)}</strong></div>
+        <div className="simulation-bar-row"><span>Simulado</span><div><i className={trendClass} style={{ '--simulation-width': `${(simulatedPrice === '' ? currentPrice : numericSimulatedPrice) / visualMax * 100}%` }} /></div><strong>{simulatedPrice === '' ? '—' : `$${numericSimulatedPrice.toFixed(2)}`}</strong></div>
       </div>
       <p className="simulator-note">Esta simulación solo afecta la interfaz y no modifica la API.</p>
     </section>

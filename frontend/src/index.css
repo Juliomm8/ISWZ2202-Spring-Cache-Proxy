@@ -3394,6 +3394,95 @@ body {
   }
 }
 
+/* Dashboard panel and local price simulation. */
+.panel-metrics {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.panel-card-heading h3,
+.simulator-card .panel-card-heading h3 {
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.panel-metric strong {
+  font-size: 1.05rem;
+  letter-spacing: -0.03em;
+}
+
+.simulator-card {
+  border-color: color-mix(in srgb, #818cf8 22%, var(--border));
+}
+
+.simulator-card .local-badge {
+  color: var(--primary);
+  background: #eef2ff;
+}
+
+.simulation-bars {
+  display: grid;
+  gap: 11px;
+  margin: 20px 22px 0;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.simulation-bar-row {
+  display: grid;
+  grid-template-columns: 54px minmax(80px, 1fr) 76px;
+  align-items: center;
+  gap: 9px;
+}
+
+.simulation-bar-row > span,
+.simulation-bar-row > strong {
+  color: var(--text-secondary);
+  font-size: 0.65rem;
+}
+
+.simulation-bar-row > strong {
+  color: var(--text);
+  text-align: right;
+}
+
+.simulation-bar-row > div {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+.simulation-bar-row i {
+  display: block;
+  width: var(--simulation-width);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #818cf8, #6366f1);
+  animation: simulation-bar-grow 520ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.simulation-bar-row i.positive { background: linear-gradient(90deg, #34d399, #22d3ee); }
+.simulation-bar-row i.negative { background: linear-gradient(90deg, #fb7185, #f97316); }
+
+@keyframes simulation-bar-grow {
+  from { width: 0; }
+  to { width: var(--simulation-width); }
+}
+
+@media (max-width: 900px) {
+  .panel-metrics { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .panel-metrics { grid-template-columns: 1fr; }
+  .simulation-bar-row { grid-template-columns: 54px minmax(80px, 1fr) 70px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .simulation-bar-row i { animation: none !important; }
+}
+
 /* Navigation and layout rhythm. */
 :root {
   --container-width: 1180px;

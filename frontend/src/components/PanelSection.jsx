@@ -3,8 +3,12 @@ import ProductImage from './ProductImage.jsx'
 import PriceSimulator from './PriceSimulator.jsx'
 
 function PanelSection({ products, onAnalyze }) {
-  const inventoryValue = useMemo(
-    () => products.reduce((total, product) => total + product.precio, 0),
+  const averagePrice = useMemo(
+    () => products.length ? products.reduce((total, product) => total + product.precio, 0) / products.length : 0,
+    [products],
+  )
+  const highestPrice = useMemo(
+    () => products.length ? Math.max(...products.map((product) => product.precio)) : 0,
     [products],
   )
   const categoryCount = useMemo(
@@ -18,14 +22,15 @@ function PanelSection({ products, onAnalyze }) {
         <div className="panel-card-heading">
           <div>
             <span className="eyebrow eyebrow-dark">Vista moderador</span>
-            <h3>Inventario de productos</h3>
+            <h3>Panel de productos</h3>
           </div>
           <span className="read-only-badge">Solo lectura · GET</span>
         </div>
           <div className="panel-metrics" aria-label="Métricas del inventario">
             <div className="panel-metric"><span>Registros</span><strong>{products.length}</strong><small>productos activos</small></div>
-            <div className="panel-metric"><span>Valor inventario</span><strong>${inventoryValue.toFixed(2)}</strong><small>lectura local</small></div>
-            <div className="panel-metric panel-metric-chart"><span>Categorías</span><strong>{categoryCount}</strong><div className="panel-sparkline" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div></div>
+            <div className="panel-metric"><span>Categorías</span><strong>{categoryCount}</strong><small>familias activas</small></div>
+            <div className="panel-metric"><span>Precio promedio</span><strong>${averagePrice.toFixed(2)}</strong><small>cálculo local</small></div>
+            <div className="panel-metric panel-metric-chart"><span>Mayor precio</span><strong>${highestPrice.toFixed(2)}</strong><div className="panel-sparkline" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div></div>
           </div>
         <div className="panel-table-wrapper">
           <table className="panel-table">
