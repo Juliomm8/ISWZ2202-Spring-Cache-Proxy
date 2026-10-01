@@ -19,6 +19,7 @@ function ProductImage({ product, className = '', eager = false }) {
           {categoryIcons[product.categoria] || '◆'}
         </span>
       )}
+      <span className="product-image-badge">{product.categoria}</span>
       <span className="image-shine" aria-hidden="true" />
     </div>
   )

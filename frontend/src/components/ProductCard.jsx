@@ -47,7 +47,7 @@ function ProductCard({ product, onViewDetails, isDemoTarget = false }) {
         <div className="product-footer">
           <strong>${product.precio.toFixed(2)}</strong>
           <button className="button button-secondary" type="button" onClick={() => onViewDetails(product.id)}>
-            Ver detalles
+            Ver detalles <span aria-hidden="true">↗</span>
           </button>
         </div>
       </div>

@@ -1,22 +1,39 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ProductImage from './ProductImage.jsx'
 
 function ProductModal({ product, loading, error, duration, history, onClose, onRefresh }) {
   const [isClosing, setIsClosing] = useState(false)
   const [showImage, setShowImage] = useState(false)
+  const closeButtonRef = useRef(null)
 
   useEffect(() => {
     if (!product) return undefined
     setIsClosing(false)
     setShowImage(false)
     const imageTimer = window.setTimeout(() => setShowImage(true), 120)
-    const closeOnEscape = (event) => {
+    const focusInitialControl = window.requestAnimationFrame(() => closeButtonRef.current?.focus())
+    const handleKeyDown = (event) => {
       if (event.key === 'Escape') requestClose()
+      if (event.key !== 'Tab') return
+      const modal = document.querySelector('.product-modal')
+      if (!modal) return
+      const focusable = [...modal.querySelectorAll('button:not(:disabled), input, select, [href]')]
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
     }
-    window.addEventListener('keydown', closeOnEscape)
+    window.addEventListener('keydown', handleKeyDown)
     return () => {
       window.clearTimeout(imageTimer)
-      window.removeEventListener('keydown', closeOnEscape)
+      window.cancelAnimationFrame(focusInitialControl)
+      window.removeEventListener('keydown', handleKeyDown)
     }
   }, [product])
 
@@ -39,7 +56,7 @@ function ProductModal({ product, loading, error, duration, history, onClose, onR
         aria-labelledby="product-modal-title"
         onMouseDown={(event) => event.stopPropagation()}
       >
-        <button className="modal-close" type="button" aria-label="Cerrar detalles" onClick={requestClose}>
+        <button ref={closeButtonRef} className="modal-close" type="button" aria-label="Cerrar detalles" onClick={requestClose}>
           ×
         </button>
         <div className="modal-accent" aria-hidden="true">◆</div>
@@ -61,6 +78,13 @@ function ProductModal({ product, loading, error, duration, history, onClose, onR
             <span>ID de producto</span>
             <strong>#{product.id}</strong>
           </div>
+        </div>
+
+        <div className="modal-divider" />
+        <div className="modal-section-label">Información técnica</div>
+        <div className="technical-details">
+          <div><span>Endpoint</span><code>GET /api/productos/{product.id}</code></div>
+          <div><span>Origen</span><strong>API Spring Boot</strong></div>
         </div>
 
         <div className="performance-panel">
