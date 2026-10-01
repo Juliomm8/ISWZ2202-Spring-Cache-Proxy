@@ -20,6 +20,7 @@ function App() {
   const [detailLoading, setDetailLoading] = useState(false)
   const [detailError, setDetailError] = useState('')
   const [queryHistory, setQueryHistory] = useState([])
+  const [activeSection, setActiveSection] = useState('inicio')
 
   const loadProducts = useCallback(async () => {
     setLoading(true)
@@ -41,6 +42,11 @@ function App() {
   useEffect(() => {
     loadProducts()
   }, [loadProducts])
+
+  const navigateTo = useCallback((sectionId) => {
+    setActiveSection(sectionId)
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
 
   const loadProductDetails = useCallback(async (id) => {
     const productInCatalog = products.find((product) => product.id === id)
@@ -94,35 +100,60 @@ function App() {
 
   return (
     <div className="app-shell">
-      <Navbar apiConnected={apiConnected} />
+      <Navbar apiConnected={apiConnected} activeSection={activeSection} onNavigate={navigateTo} />
       <main className="page-content">
-        <Hero onRefresh={loadProducts} loading={loading} lastFetchDuration={lastFetchDuration} />
-        <Stats
-          productCount={products.length}
-          categoryCount={categories.length}
-          apiConnected={apiConnected}
-          lastDuration={lastFetchDuration}
-        />
-        {error ? (
-          <section className="error-state" role="alert">
-            <h2>{error}</h2>
-            <p>Verifica que el backend Spring Boot esté ejecutándose en el puerto 8080.</p>
-            <button className="button button-primary" type="button" onClick={loadProducts}>
-              Reintentar
-            </button>
-          </section>
-        ) : (
-          <>
-            <SearchFilters
-              search={search}
-              category={category}
-              categories={categories}
-              onSearchChange={setSearch}
-              onCategoryChange={setCategory}
-            />
-            <ProductGrid products={filteredProducts} loading={loading} onViewDetails={loadProductDetails} />
-          </>
-        )}
+        <section id="inicio" className="page-section hero-section">
+          <Hero
+            onExplore={() => navigateTo('catalogo')}
+            onPerformance={() => navigateTo('rendimiento')}
+            onRefresh={loadProducts}
+            loading={loading}
+            lastFetchDuration={lastFetchDuration}
+          />
+          <Stats
+            productCount={products.length}
+            categoryCount={categories.length}
+            apiConnected={apiConnected}
+            lastDuration={lastFetchDuration}
+          />
+        </section>
+        <section id="catalogo" className="page-section catalog-section">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow eyebrow-dark">Colección disponible</span>
+              <h2>Explora el catálogo</h2>
+            </div>
+            <span className="section-caption">Datos actualizados desde Spring Boot</span>
+          </div>
+          {error ? (
+            <section className="error-state" role="alert">
+              <h2>{error}</h2>
+              <p>Verifica que el backend Spring Boot esté ejecutándose en el puerto 8080.</p>
+              <button className="button button-primary" type="button" onClick={loadProducts}>Reintentar conexión</button>
+            </section>
+          ) : (
+            <>
+              <SearchFilters
+                search={search}
+                category={category}
+                categories={categories}
+                onSearchChange={setSearch}
+                onCategoryChange={setCategory}
+              />
+              <ProductGrid products={filteredProducts} loading={loading} onViewDetails={loadProductDetails} />
+            </>
+          )}
+        </section>
+        <section id="rendimiento" className="page-section placeholder-section">
+          <span className="eyebrow eyebrow-dark">Observabilidad</span>
+          <h2>Rendimiento</h2>
+          <p>Comprueba el comportamiento de las consultas y el caché del backend desde el detalle de cada producto.</p>
+        </section>
+        <section id="panel" className="page-section placeholder-section">
+          <span className="eyebrow eyebrow-dark">Vista general</span>
+          <h2>Panel</h2>
+          <p>Un panel informativo del catálogo estará disponible en esta sección.</p>
+        </section>
       </main>
       <Footer />
       <ProductModal
