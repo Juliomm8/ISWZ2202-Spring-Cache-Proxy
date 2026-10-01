@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import useMagneticButton from '../hooks/useMagneticButton.js'
 
-function Hero({ onExplore, onPerformance, onStartDemo, onRefresh, loading, lastFetchDuration }) {
+function Hero({ onExplore, onPerformance, onStartDemo, onRefresh, loading, lastFetchDuration, isPublicDemo }) {
   const heroRef = useRef(null)
   const pointerRef = useRef({ x: 0, y: 0 })
   const frameRef = useRef(0)
@@ -61,10 +61,10 @@ function Hero({ onExplore, onPerformance, onStartDemo, onRefresh, loading, lastF
         </div>
         <div className="hero-request hero-stagger hero-stagger-six">
           <span className="live-pulse" />
-          <span>Última consulta al catálogo</span>
-          <strong>{lastFetchDuration ? `${lastFetchDuration} ms` : 'Esperando conexión'}</strong>
+          <span>{isPublicDemo ? 'Presentación del catálogo' : 'Última consulta al catálogo'}</span>
+          <strong>{isPublicDemo ? 'Datos locales' : lastFetchDuration ? `${lastFetchDuration} ms` : 'Esperando conexión'}</strong>
           <button className="text-button" type="button" onClick={onRefresh} disabled={loading}>
-            {loading ? 'Actualizando...' : 'Actualizar'}
+            {loading ? 'Actualizando...' : isPublicDemo ? 'Recargar demo' : 'Actualizar'}
           </button>
         </div>
       </div>
@@ -72,9 +72,9 @@ function Hero({ onExplore, onPerformance, onStartDemo, onRefresh, loading, lastF
         <div className="hero-glow" />
         <div className="floating-card floating-card-main">
           <div className="floating-card-top"><span className="mini-icon">✦</span><span>API response</span><span className="mini-status">200</span></div>
-          <strong>{lastFetchDuration ? `${lastFetchDuration} ms` : '1500 ms'}</strong>
+          <strong>{isPublicDemo ? 'Datos locales' : lastFetchDuration ? `${lastFetchDuration} ms` : '—'}</strong>
           <div className="mini-bars"><i /><i /><i /><i /><i /></div>
-          <small>Consulta monitorizada</small>
+          <small>{isPublicDemo ? 'Demo visual' : 'Consulta monitorizada'}</small>
         </div>
         <div className="floating-card floating-card-small">
           <span className="cache-icon">◌</span>
@@ -85,7 +85,7 @@ function Hero({ onExplore, onPerformance, onStartDemo, onRefresh, loading, lastF
           <div className="system-panel-flow">
             <span>API</span><i>→</i><span>GET</span><i>→</i><span>Proxy</span><i>→</i><span>Cache</span>
           </div>
-          <div className="system-panel-response"><span>response</span><strong>200 OK</strong><small>{lastFetchDuration ? `${lastFetchDuration} ms` : '1500 ms'} · JSON</small></div>
+          <div className="system-panel-response"><span>response</span><strong>{isPublicDemo ? 'LOCAL' : '200 OK'}</strong><small>{isPublicDemo ? 'Datos locales' : lastFetchDuration ? `${lastFetchDuration} ms · JSON` : '—'}</small></div>
         </div>
         <div className="hero-grid-pattern" />
       </div>

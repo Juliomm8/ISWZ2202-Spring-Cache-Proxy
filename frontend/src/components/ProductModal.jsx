@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import ProductImage from './ProductImage.jsx'
 
-function ProductModal({ product, loading, error, duration, history, onClose, onRefresh }) {
+function ProductModal({ product, loading, error, duration, history, onClose, onRefresh, isPublicDemo }) {
   const [isClosing, setIsClosing] = useState(false)
   const [showImage, setShowImage] = useState(false)
   const closeButtonRef = useRef(null)
@@ -95,21 +95,21 @@ function ProductModal({ product, loading, error, duration, history, onClose, onR
         <div className="modal-section-label">Información técnica</div>
         <div className="technical-details">
           <div><span>Endpoint</span><code>GET /api/productos/{product.id}</code></div>
-          <div><span>Origen</span><strong>API Spring Boot</strong></div>
+          <div><span>Origen</span><strong>{isPublicDemo ? 'Datos locales' : 'API Spring Boot'}</strong></div>
         </div>
 
         <div className="performance-panel">
           <div className="performance-heading">
             <div>
               <span>Rendimiento de consulta</span>
-              <strong>{loading ? 'Consultando...' : `${duration ?? '—'} ms`}</strong>
+              <strong>{loading ? 'Consultando...' : isPublicDemo ? 'Disponible en ejecución local' : `${duration ?? '—'} ms`}</strong>
             </div>
             <span className="performance-icon" aria-hidden="true">↗</span>
           </div>
-          <p>Las consultas posteriores pueden responder más rápido gracias al caché del backend.</p>
+          <p>{isPublicDemo ? 'Esta vista usa datos locales de presentación. Las mediciones reales de caché están disponibles al ejecutar el backend localmente.' : 'Las consultas posteriores pueden responder más rápido gracias al caché del backend.'}</p>
           {error && <p className="modal-error">{error}</p>}
           <button className="button button-primary modal-refresh" type="button" onClick={onRefresh} disabled={loading}>
-            {loading ? 'Consultando...' : 'Consultar nuevamente'}
+            {loading ? 'Consultando...' : isPublicDemo ? 'Actualizar detalle local' : 'Consultar nuevamente'}
           </button>
         </div>
 

@@ -24,7 +24,7 @@ const flowNodes = [
   { label: 'Repositorio', detail: 'Fuente de datos' },
 ]
 
-function PerformanceSection({ products, history, onRunQuery }) {
+function PerformanceSection({ isPublicDemo, products, history, onRunQuery }) {
   const [selectedId, setSelectedId] = useState(products[0]?.id ?? '')
   const [running, setRunning] = useState(false)
   const [runState, setRunState] = useState('idle')
@@ -55,7 +55,7 @@ function PerformanceSection({ products, history, onRunQuery }) {
   const chartMax = Math.max(...chartItems.map((query) => query.duration), 1)
 
   const executeTest = async () => {
-    if (!selectedId) return
+    if (!selectedId || isPublicDemo) return
     setRunning(true)
     setRunState('running')
     try {
@@ -74,9 +74,9 @@ function PerformanceSection({ products, history, onRunQuery }) {
         <div>
           <span className="eyebrow eyebrow-dark">Observabilidad del sistema</span>
           <h2>Laboratorio de rendimiento</h2>
-          <p>Ejecuta una consulta real y observa el tiempo medido en esta sesión.</p>
+          <p>{isPublicDemo ? 'Las mediciones reales de caché requieren ejecutar el backend Spring Boot localmente.' : 'Ejecuta una consulta real y observa el tiempo medido en esta sesión.'}</p>
         </div>
-        <span className="performance-live-badge"><i /> Sesión local</span>
+        <span className={`performance-live-badge ${isPublicDemo ? 'is-demo' : ''}`}><i /> {isPublicDemo ? 'Disponible en ejecución local' : 'Sesión local'}</span>
       </div>
 
       <div className="performance-layout">
@@ -95,17 +95,17 @@ function PerformanceSection({ products, history, onRunQuery }) {
             </select>
           </label>
           <code className="performance-endpoint">GET /api/productos/{selectedId || ':id'}</code>
-          <button ref={queryButton.ref} className="button button-primary performance-button" type="button" onClick={executeTest} onPointerMove={queryButton.handlePointerMove} onPointerLeave={queryButton.reset} disabled={running || !selectedProduct}>
-            {running ? <><span className="button-spinner" aria-hidden="true" /> Consultando...</> : 'Ejecutar consulta'} <span aria-hidden="true">→</span>
+          <button ref={queryButton.ref} className="button button-primary performance-button" type="button" onClick={executeTest} onPointerMove={queryButton.handlePointerMove} onPointerLeave={queryButton.reset} disabled={isPublicDemo || running || !selectedProduct}>
+            {isPublicDemo ? 'Disponible solo en local' : running ? <><span className="button-spinner" aria-hidden="true" /> Consultando...</> : 'Ejecutar consulta'} {!isPublicDemo && <span aria-hidden="true">→</span>}
           </button>
           <div className="performance-last-result">
             <span>Última respuesta</span>
-            <strong>{running ? 'Consultando...' : latest != null ? `${latest} ms` : '—'}</strong>
+            <strong>{isPublicDemo ? 'Disponible en ejecución local' : running ? 'Consultando...' : latest != null ? `${latest} ms` : '—'}</strong>
           </div>
           <div className="performance-metrics performance-session-metrics">
-            <div><span>Mejor</span><strong>{best != null ? `${best} ms` : '—'}</strong></div>
-            <div><span>Peor</span><strong>{worst != null ? `${worst} ms` : '—'}</strong></div>
-            <div><span>Promedio</span><strong>{average != null ? `${average} ms` : '—'}</strong></div>
+            <div><span>Mejor</span><strong>{isPublicDemo ? '—' : best != null ? `${best} ms` : '—'}</strong></div>
+            <div><span>Peor</span><strong>{isPublicDemo ? '—' : worst != null ? `${worst} ms` : '—'}</strong></div>
+            <div><span>Promedio</span><strong>{isPublicDemo ? '—' : average != null ? `${average} ms` : '—'}</strong></div>
             <div><span>Consultas</span><strong>{history.length}</strong></div>
           </div>
         </section>
@@ -116,9 +116,9 @@ function PerformanceSection({ products, history, onRunQuery }) {
               <span className="eyebrow eyebrow-dark">Flujo conceptual</span>
               <h3>De React al dato</h3>
             </div>
-            <span className={`flow-state-badge ${runState === 'running' ? 'is-running' : ''}`}>{runState === 'running' ? 'Recorriendo' : 'Listo'}</span>
+            <span className={`flow-state-badge ${runState === 'running' ? 'is-running' : ''}`}>{isPublicDemo ? 'Solo local' : runState === 'running' ? 'Recorriendo' : 'Listo'}</span>
           </div>
-          <p className="performance-intro">La arquitectura se representa como una guía visual. El tiempo observado se obtiene de la petición real y no determina por sí solo qué capa respondió.</p>
+          <p className="performance-intro">{isPublicDemo ? 'La arquitectura se representa como una guía visual. Ejecuta el backend Spring Boot localmente para observar tiempos reales y comportamiento del caché.' : 'La arquitectura se representa como una guía visual. El tiempo observado se obtiene de la petición real y no determina por sí solo qué capa respondió.'}</p>
           <div className={`architecture-flow architecture-flow-wide ${running ? 'is-running' : ''} ${runState === 'success' ? 'has-result' : ''}`}>
             {flowNodes.map((node, index) => (
               <Fragment key={node.label}>
@@ -133,7 +133,7 @@ function PerformanceSection({ products, history, onRunQuery }) {
           </div>
           <div className={`architecture-result ${runState === 'error' ? 'is-error' : ''}`}>
             <span>Tiempo observado</span>
-            <strong>{running ? 'Consultando...' : latest != null ? `${latest} ms` : '—'}</strong>
+            <strong>{isPublicDemo ? 'Disponible en ejecución local' : running ? 'Consultando...' : latest != null ? `${latest} ms` : '—'}</strong>
             <span className="result-arrow">{runState === 'success' ? '✓' : '↗'}</span>
           </div>
         </section>
@@ -143,8 +143,8 @@ function PerformanceSection({ products, history, onRunQuery }) {
             <div><span className="eyebrow eyebrow-dark">Comparación de sesión</span><h3>Primera vs. repetida</h3></div>
             <span className="comparison-badge">{productHistory.length}/2+</span>
           </div>
-          {firstDuration == null || repeatedDuration == null ? (
-            <div className="comparison-empty"><span aria-hidden="true">↗</span><p>Ejecuta al menos dos consultas del mismo producto para comparar los tiempos observados.</p></div>
+          {isPublicDemo || firstDuration == null || repeatedDuration == null ? (
+            <div className="comparison-empty"><span aria-hidden="true">↗</span><p>{isPublicDemo ? 'Disponible en ejecución local para comparar los tiempos observados.' : 'Ejecuta al menos dos consultas del mismo producto para comparar los tiempos observados.'}</p></div>
           ) : (
             <div className="comparison-content">
               <div className="comparison-row"><div><span>Primera consulta</span><strong>{firstDuration} ms</strong></div><div className="comparison-track"><i className="is-first" style={{ '--comparison-width': `${(firstDuration / comparisonMax) * 100}%` }} /></div></div>
@@ -160,7 +160,7 @@ function PerformanceSection({ products, history, onRunQuery }) {
             <span className="history-count">{history.length}/5</span>
           </div>
           {chartItems.length === 0 ? (
-            <p className="history-empty">Ejecuta una consulta para ver aquí el comportamiento de la respuesta.</p>
+            <p className="history-empty">{isPublicDemo ? 'Disponible en ejecución local para observar el comportamiento de la respuesta.' : 'Ejecuta una consulta para ver aquí el comportamiento de la respuesta.'}</p>
           ) : (
             <div className="performance-chart history-timeline" aria-label="Historial de tiempos de respuesta">
               {chartItems.map((query, index) => {
@@ -177,7 +177,7 @@ function PerformanceSection({ products, history, onRunQuery }) {
               })}
             </div>
           )}
-          <p className="performance-note">Los datos se mantienen solamente en el estado del frontend durante esta sesión.</p>
+          <p className="performance-note">{isPublicDemo ? 'Modo público: no se ejecutan consultas contra localhost ni se muestran tiempos simulados.' : 'Los datos se mantienen solamente en el estado del frontend durante esta sesión.'}</p>
         </section>
       </div>
     </div>

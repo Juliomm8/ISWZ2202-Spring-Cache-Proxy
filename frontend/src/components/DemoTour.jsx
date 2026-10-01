@@ -28,7 +28,35 @@ const stepCopy = [
   },
 ]
 
-function DemoTour({ isOpen, step, product, firstDuration, secondDuration, loading, error, onNext, onPrevious, onExit, onQuery, onReturnHome }) {
+const publicStepCopy = [
+  {
+    eyebrow: 'Paso 1 · presentación',
+    title: 'Explora el catálogo sin backend',
+    text: 'Esta publicación usa datos locales de presentación para que puedas recorrer la experiencia desde GitHub Pages.',
+  },
+  {
+    eyebrow: 'Paso 2 · catálogo',
+    title: 'Cada producto tiene su propia ficha',
+    text: 'Explora los productos, sus categorías, precios e imágenes sin depender de una API remota.',
+  },
+  {
+    eyebrow: 'Paso 3 · rendimiento',
+    title: 'Las mediciones reales quedan disponibles localmente',
+    text: 'Las mediciones reales de caché requieren ejecutar el backend Spring Boot localmente.',
+  },
+  {
+    eyebrow: 'Paso 4 · caché',
+    title: 'Compara el comportamiento en ejecución local',
+    text: 'El flujo de Spring Boot, Proxy y Cache se puede probar con tiempos reales al ejecutar el proyecto localmente.',
+  },
+  {
+    eyebrow: 'Paso 5 · resumen',
+    title: 'La arquitectura en una mirada',
+    text: 'La experiencia pública conserva el recorrido visual y deja las pruebas de backend para la ejecución local.',
+  },
+]
+
+function DemoTour({ isOpen, step, product, firstDuration, secondDuration, loading, error, onNext, onPrevious, onExit, onQuery, onReturnHome, isPublicDemo }) {
   const [spotlight, setSpotlight] = useState(null)
   const cardRef = useRef(null)
 
@@ -63,7 +91,7 @@ function DemoTour({ isOpen, step, product, firstDuration, secondDuration, loadin
 
   useEffect(() => {
     if (!isOpen) return undefined
-    const selector = step === 1 && product ? `[data-demo-product="${product.id}"]` : step >= 2 && step <= 3 ? '.product-modal' : null
+    const selector = step === 1 && product ? `[data-demo-product="${product.id}"]` : !isPublicDemo && step >= 2 && step <= 3 ? '.product-modal' : null
     if (!selector) {
       setSpotlight(null)
       return undefined
@@ -89,16 +117,16 @@ function DemoTour({ isOpen, step, product, firstDuration, secondDuration, loadin
       window.removeEventListener('scroll', scheduleUpdate)
       if (frameId) window.cancelAnimationFrame(frameId)
     }
-  }, [isOpen, product, step, firstDuration, secondDuration])
+  }, [isOpen, product, step, firstDuration, secondDuration, isPublicDemo])
 
   if (!isOpen) return null
 
-  const copy = stepCopy[step]
+  const copy = isPublicDemo ? publicStepCopy[step] : stepCopy[step]
   const isFirstQuery = step === 2
   const isSecondQuery = step === 3
-  const hasCurrentResult = isFirstQuery ? firstDuration != null : isSecondQuery ? secondDuration != null : true
+  const hasCurrentResult = isPublicDemo ? true : isFirstQuery ? firstDuration != null : isSecondQuery ? secondDuration != null : true
   const canContinue = !loading && !error && hasCurrentResult
-  const actionLabel = step < 2 ? 'Continuar' : step === 2 && !firstDuration ? 'Consultar primera vez' : step === 3 && !secondDuration ? 'Consultar nuevamente' : step === 4 ? 'Volver al inicio' : 'Continuar'
+  const actionLabel = step < 2 ? 'Continuar' : isPublicDemo && step < 4 ? 'Continuar' : step === 2 && !firstDuration ? 'Consultar primera vez' : step === 3 && !secondDuration ? 'Consultar nuevamente' : step === 4 ? 'Volver al inicio' : 'Continuar'
 
   return (
     <div className="demo-layer" role="dialog" aria-modal="true" aria-labelledby="demo-title">
@@ -118,8 +146,9 @@ function DemoTour({ isOpen, step, product, firstDuration, secondDuration, loadin
         <p>{copy.text}</p>
 
         {step === 1 && product && <div className="demo-product-note"><span>Producto destacado</span><strong>{product.nombre}</strong><small>Precio ${product.precio.toFixed(2)}</small></div>}
-        {step === 2 && <div className="demo-timing"><span>Primera consulta</span><strong>{loading ? 'Consultando...' : firstDuration != null ? `${firstDuration} ms` : '—'}</strong></div>}
-        {step === 3 && <div className="demo-timing"><span>Primera · {firstDuration ?? '—'} ms</span><strong>{loading ? 'Consultando...' : secondDuration != null ? `Segunda · ${secondDuration} ms` : '—'}</strong></div>}
+        {step === 2 && <div className="demo-timing"><span>Primera consulta</span><strong>{isPublicDemo ? 'Disponible en ejecución local' : loading ? 'Consultando...' : firstDuration != null ? `${firstDuration} ms` : '—'}</strong></div>}
+        {step === 3 && <div className="demo-timing"><span>{isPublicDemo ? 'Medición de caché' : `Primera · ${firstDuration ?? '—'} ms`}</span><strong>{isPublicDemo ? 'Disponible en ejecución local' : loading ? 'Consultando...' : secondDuration != null ? `Segunda · ${secondDuration} ms` : '—'}</strong></div>}
+        {isPublicDemo && step >= 2 && step <= 3 && <div className="demo-public-note">Las mediciones reales de caché requieren ejecutar el backend Spring Boot localmente.</div>}
         {step === 4 && <div className="demo-architecture"><span>Cliente</span><i>↓</i><span>Spring Controller</span><i>↓</i><span>Service</span><i>↓</i><span>Proxy</span><i>↓</i><span>Cache / Repositorio</span></div>}
         {error && <div className="demo-error" role="alert">{error}</div>}
 
@@ -127,9 +156,9 @@ function DemoTour({ isOpen, step, product, firstDuration, secondDuration, loadin
           {step > 0 && <button className="button button-ghost-dark" type="button" onClick={onPrevious} disabled={loading}>Anterior</button>}
           {step === 4 ? (
             <button className="button button-primary demo-primary-action" type="button" onClick={onReturnHome}>Volver al inicio <span aria-hidden="true">→</span></button>
-          ) : isFirstQuery && !firstDuration ? (
+          ) : !isPublicDemo && isFirstQuery && !firstDuration ? (
             <button className="button button-primary demo-primary-action" type="button" onClick={onQuery} disabled={loading}>{actionLabel} <span aria-hidden="true">→</span></button>
-          ) : isSecondQuery && !secondDuration ? (
+          ) : !isPublicDemo && isSecondQuery && !secondDuration ? (
             <button className="button button-primary demo-primary-action" type="button" onClick={onQuery} disabled={loading}>{actionLabel} <span aria-hidden="true">→</span></button>
           ) : (
             <button className="button button-primary demo-primary-action" type="button" onClick={onNext} disabled={!canContinue}>{actionLabel} <span aria-hidden="true">→</span></button>

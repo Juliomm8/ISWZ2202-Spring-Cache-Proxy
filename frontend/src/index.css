@@ -3756,3 +3756,33 @@ body {
 
   .api-status.is-loading .status-dot { animation: none !important; }
 }
+.api-status.is-demo {
+  color: var(--accent-strong, #8f4b1d);
+}
+
+.api-status.is-demo .status-dot {
+  background: #d48a45;
+  box-shadow: 0 0 0 4px rgba(212, 138, 69, 0.14);
+}
+
+.performance-live-badge.is-demo {
+  color: var(--accent-strong, #8f4b1d);
+  border-color: rgba(212, 138, 69, 0.3);
+  background: rgba(212, 138, 69, 0.08);
+}
+
+.performance-live-badge.is-demo i {
+  background: #d48a45;
+  box-shadow: 0 0 0 4px rgba(212, 138, 69, 0.14);
+}
+
+.demo-public-note {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(212, 138, 69, 0.28);
+  border-radius: 0.75rem;
+  color: var(--text-muted);
+  background: rgba(212, 138, 69, 0.08);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}

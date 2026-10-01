@@ -16,6 +16,7 @@ import MobileNav from './components/MobileNav.jsx'
 import ScrollProgress from './components/ScrollProgress.jsx'
 import useDemoTour from './hooks/useDemoTour.js'
 import { obtenerProductoPorId, obtenerProductos } from './services/productoService.js'
+import { DEMO_PRODUCTS, isPublicDemo } from './services/demoData.js'
 
 function App() {
   const [theme, setTheme] = useState(() => window.localStorage.getItem('product-hub-theme') || 'light')
@@ -74,6 +75,14 @@ function App() {
   const loadProducts = useCallback(async () => {
     setLoading(true)
     setError('')
+
+    if (isPublicDemo) {
+      setProducts(DEMO_PRODUCTS)
+      setLastFetchDuration(null)
+      setApiConnected(false)
+      setLoading(false)
+      return
+    }
 
     try {
       const result = await obtenerProductos()
@@ -135,6 +144,12 @@ function App() {
   }, [demo, navigateTo])
 
   const runProductQuery = useCallback(async (id) => {
+    if (isPublicDemo) {
+      const product = DEMO_PRODUCTS.find((item) => item.id === Number(id))
+      if (!product) throw new Error('Producto no encontrado en la demo pública')
+      return { data: product, duration: null }
+    }
+
     const result = await obtenerProductoPorId(id)
     const duration = Math.round(result.duration)
     setQueryHistory((currentHistory) => [
@@ -164,6 +179,7 @@ function App() {
   }, [products, runProductQuery])
 
   const handleDemoQuery = useCallback(async () => {
+    if (isPublicDemo) return
     if (!demoProductId) return
     setDemoLoading(true)
     setDemoError('')
@@ -251,7 +267,7 @@ function App() {
     <div className="app-shell">
       <ScrollProgress />
       <CursorGlow />
-      <Navbar apiConnected={apiConnected} apiLoading={loading} activeSection={activeSection} onNavigate={navigateTo} isDark={theme === 'dark'} isScrolled={isScrolled} onToggleTheme={() => setTheme((currentTheme) => currentTheme === 'dark' ? 'light' : 'dark')} />
+      <Navbar isPublicDemo={isPublicDemo} apiConnected={apiConnected} apiLoading={loading} activeSection={activeSection} onNavigate={navigateTo} isDark={theme === 'dark'} isScrolled={isScrolled} onToggleTheme={() => setTheme((currentTheme) => currentTheme === 'dark' ? 'light' : 'dark')} />
       <MobileNav activeSection={activeSection} onNavigate={navigateTo} />
       <main className="page-content">
         <section id="inicio" className="page-section hero-section">
@@ -263,6 +279,7 @@ function App() {
               onRefresh={loadProducts}
               loading={loading}
               lastFetchDuration={lastFetchDuration}
+              isPublicDemo={isPublicDemo}
             />
           </Reveal>
           <Reveal className="stats-reveal" delay={120}>
@@ -273,6 +290,7 @@ function App() {
               mostExpensivePrice={mostExpensivePrice}
               apiConnected={apiConnected}
               lastDuration={lastFetchDuration}
+              isPublicDemo={isPublicDemo}
             />
           </Reveal>
         </section>
@@ -283,7 +301,7 @@ function App() {
                 <span className="eyebrow eyebrow-dark">Colección disponible</span>
                 <h2>Explora el catálogo</h2>
               </div>
-              <span className="section-caption">Datos actualizados desde Spring Boot</span>
+              <span className="section-caption">{isPublicDemo ? 'Datos locales de presentación' : 'Datos actualizados desde Spring Boot'}</span>
             </div>
             {error ? (
               <section className="error-state" role="alert">
@@ -305,14 +323,14 @@ function App() {
                   onSortChange={setSortOrder}
                   onViewChange={setViewMode}
                 />
-                <ProductGrid products={filteredProducts} loading={loading} viewMode={viewMode} onViewDetails={loadProductDetails} onClearFilters={clearFilters} highlightedId={demo.isOpen ? demoProductId : null} />
+            <ProductGrid products={filteredProducts} loading={loading} viewMode={viewMode} onViewDetails={loadProductDetails} onClearFilters={clearFilters} highlightedId={demo.isOpen ? demoProductId : null} />
               </>
             )}
           </Reveal>
         </section>
         <section id="rendimiento" className="page-section placeholder-section">
           <Reveal className="section-reveal">
-            <PerformanceSection products={products} history={queryHistory} onRunQuery={runProductQuery} />
+            <PerformanceSection isPublicDemo={isPublicDemo} products={products} history={queryHistory} onRunQuery={runProductQuery} />
           </Reveal>
         </section>
         <section id="panel" className="page-section placeholder-section">
@@ -335,6 +353,7 @@ function App() {
         error={detailError}
         duration={queryHistory[0]?.duration}
         history={queryHistory}
+        isPublicDemo={isPublicDemo}
         onClose={() => setSelectedProduct(null)}
         onRefresh={() => loadProductDetails(selectedProduct.id)}
       />
@@ -352,6 +371,7 @@ function App() {
         onExit={exitDemo}
         onQuery={handleDemoQuery}
         onReturnHome={() => { exitDemo(); navigateTo('inicio') }}
+        isPublicDemo={isPublicDemo}
       />
     </div>
   )

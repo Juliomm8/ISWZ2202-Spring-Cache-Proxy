@@ -7,7 +7,7 @@ const navItems = [
   { id: 'panel', label: 'Panel' },
 ]
 
-function Navbar({ apiConnected, apiLoading, activeSection, onNavigate, isDark, onToggleTheme, isScrolled }) {
+function Navbar({ isPublicDemo, apiConnected, apiLoading, activeSection, onNavigate, isDark, onToggleTheme, isScrolled }) {
   return (
     <nav className={`navbar ${isScrolled ? 'is-scrolled' : ''}`} aria-label="Navegación principal">
       <div className="brand">
@@ -32,9 +32,9 @@ function Navbar({ apiConnected, apiLoading, activeSection, onNavigate, isDark, o
             </button>
           ))}
         </div>
-        <div className={`api-status ${apiConnected ? 'is-connected' : ''} ${apiLoading ? 'is-loading' : ''}`}>
+        <div className={`api-status ${isPublicDemo ? 'is-demo' : ''} ${apiConnected ? 'is-connected' : ''} ${apiLoading ? 'is-loading' : ''}`}>
           <span className="status-dot" />
-          {apiLoading ? 'Consultando API' : apiConnected ? 'Backend conectado' : 'Backend sin conexión'}
+          {isPublicDemo ? 'Demo visual' : apiLoading ? 'Consultando API' : apiConnected ? 'Backend conectado' : 'Backend sin conexión'}
         </div>
         <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
       </div>
