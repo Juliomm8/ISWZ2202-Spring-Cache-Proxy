@@ -667,6 +667,20 @@ select:focus-visible {
   gap: 10px;
 }
 
+.architecture-flow.is-running .architecture-step {
+  animation: flow-step-pulse 1.2s ease-in-out infinite;
+}
+
+.architecture-flow.is-running .architecture-step:nth-child(1) { animation-delay: 0ms; }
+.architecture-flow.is-running .architecture-step:nth-child(3) { animation-delay: 180ms; }
+.architecture-flow.is-running .architecture-step:nth-child(5) { animation-delay: 360ms; }
+.architecture-flow.is-running .architecture-step:nth-child(7) { animation-delay: 540ms; }
+
+.architecture-flow.has-result .cache-step {
+  border-color: #6ee7b7;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+}
+
 .architecture-step {
   flex: 1;
   min-height: 94px;
@@ -710,6 +724,19 @@ select:focus-visible {
   font-size: 1.1rem;
 }
 
+.flow-arrow i {
+  display: block;
+  font-style: normal;
+}
+
+.architecture-flow.is-running .flow-arrow i {
+  animation: flow-arrow-pulse 850ms ease-in-out infinite;
+}
+
+.architecture-flow.is-running .flow-arrow:nth-child(2) i { animation-delay: 130ms; }
+.architecture-flow.is-running .flow-arrow:nth-child(4) i { animation-delay: 260ms; }
+.architecture-flow.is-running .flow-arrow:nth-child(6) i { animation-delay: 390ms; }
+
 .architecture-result {
   display: flex;
   align-items: center;
@@ -721,6 +748,10 @@ select:focus-visible {
   background: #ecfdf5;
   font-size: 0.72rem;
 }
+
+.architecture-result.is-success { background: #ecfdf5; }
+.architecture-result.is-error { color: #b91c1c; background: #fef2f2; }
+.architecture-result.is-error strong { color: #991b1b; }
 
 .architecture-result strong {
   color: #065f46;
@@ -774,6 +805,17 @@ select:focus-visible {
 
 .performance-button:hover {
   background: #4338ca;
+}
+
+.button-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
 }
 
 .performance-metrics {
@@ -855,6 +897,8 @@ select:focus-visible {
   height: 100%;
   min-width: 4px;
   border-radius: inherit;
+  width: 0;
+  animation: chart-grow 760ms cubic-bezier(0.2, 0.75, 0.25, 1) forwards;
 }
 
 .chart-bar.is-slow { background: linear-gradient(90deg, #f59e0b, #f97316); }
@@ -1661,6 +1705,24 @@ select:focus-visible {
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes chart-grow {
+  to { width: var(--bar-width); }
+}
+
+@keyframes flow-arrow-pulse {
+  0%, 100% { opacity: 0.35; transform: translateX(0); }
+  50% { color: var(--primary); opacity: 1; transform: translateX(4px); }
+}
+
+@keyframes flow-step-pulse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 [data-theme="dark"] .product-table th,

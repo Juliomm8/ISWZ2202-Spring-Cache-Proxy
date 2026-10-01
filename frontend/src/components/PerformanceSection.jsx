@@ -9,6 +9,7 @@ function speedLabel(duration) {
 function PerformanceSection({ products, history, onRunQuery }) {
   const [selectedId, setSelectedId] = useState(products[0]?.id ?? '')
   const [running, setRunning] = useState(false)
+  const [runState, setRunState] = useState('idle')
 
   useEffect(() => {
     if (!products.some((product) => product.id === Number(selectedId))) {
@@ -31,8 +32,12 @@ function PerformanceSection({ products, history, onRunQuery }) {
   const executeTest = async () => {
     if (!selectedId) return
     setRunning(true)
+    setRunState('running')
     try {
       await onRunQuery(Number(selectedId))
+      setRunState('success')
+    } catch {
+      setRunState('error')
     } finally {
       setRunning(false)
     }
@@ -49,14 +54,20 @@ function PerformanceSection({ products, history, onRunQuery }) {
           <span className="performance-live-badge"><i /> Sesión activa</span>
         </div>
         <p className="performance-intro">Observa cómo una primera consulta atraviesa las capas del backend y cómo una repetida puede aprovechar el caché.</p>
-        <div className="architecture-flow">
-          <div className="architecture-step"><span>01</span><strong>Primera petición</strong><small>GET /productos/:id</small></div>
-          <span className="flow-arrow">↓</span>
+        <div className={`architecture-flow ${running ? 'is-running' : ''} ${runState === 'success' ? 'has-result' : ''}`}>
+          <div className="architecture-step"><span>01</span><strong>Cliente</strong><small>GET /productos/:id</small></div>
+          <span className="flow-arrow" aria-hidden="true"><i>→</i></span>
           <div className="architecture-step accent"><span>02</span><strong>Proxy</strong><small>Intermedia el acceso</small></div>
-          <span className="flow-arrow">↓</span>
-          <div className="architecture-step"><span>03</span><strong>Repositorio</strong><small>~1500 ms simulados</small></div>
+          <span className="flow-arrow" aria-hidden="true"><i>→</i></span>
+          <div className="architecture-step cache-step"><span>03</span><strong>Cache</strong><small>Busca respuesta previa</small></div>
+          <span className="flow-arrow" aria-hidden="true"><i>→</i></span>
+          <div className="architecture-step"><span>04</span><strong>Repository</strong><small>Fuente de datos</small></div>
         </div>
-        <div className="architecture-result"><span>Consultas repetidas</span><strong>Cache → respuesta rápida</strong><span className="result-arrow">↗</span></div>
+        <div className={`architecture-result ${runState === 'success' ? 'is-success' : ''} ${runState === 'error' ? 'is-error' : ''}`}>
+          <span>{runState === 'running' ? 'Prueba en curso' : runState === 'error' ? 'Respuesta no disponible' : 'Consultas repetidas'}</span>
+          <strong>{runState === 'running' ? 'Recorriendo pipeline...' : runState === 'error' ? 'Revisa la conexión' : 'Cache → respuesta rápida'}</strong>
+          <span className="result-arrow">{runState === 'success' ? '✓' : '↗'}</span>
+        </div>
       </section>
 
       <section className="performance-card performance-tool">
@@ -74,7 +85,7 @@ function PerformanceSection({ products, history, onRunQuery }) {
           </select>
         </label>
         <button className="button button-primary performance-button" type="button" onClick={executeTest} disabled={running || !selectedProduct}>
-          {running ? 'Ejecutando...' : 'Ejecutar prueba'} <span aria-hidden="true">→</span>
+          {running ? <><span className="button-spinner" aria-hidden="true" /> Ejecutando...</> : 'Ejecutar prueba'} <span aria-hidden="true">→</span>
         </button>
         <div className="performance-metrics">
           <div><span>Tiempo actual</span><strong>{latest ? `${latest} ms` : '—'}</strong></div>
@@ -97,7 +108,7 @@ function PerformanceSection({ products, history, onRunQuery }) {
               return (
                 <div className="chart-row" key={`${query.id}-${query.duration}-${index}`}>
                   <span className="chart-label">Consulta {index + 1}</span>
-                  <div className="chart-track"><span className={`chart-bar ${speed.className}`} style={{ width: `${Math.max(3, (query.duration / chartMax) * 100)}%` }} /></div>
+                  <div className="chart-track"><span className={`chart-bar ${speed.className}`} style={{ '--bar-width': `${Math.max(3, (query.duration / chartMax) * 100)}%`, animationDelay: `${index * 90}ms` }} /></div>
                   <strong>{query.duration} ms</strong>
                   <span className={`speed-label ${speed.className}`}>{speed.label}</span>
                 </div>
