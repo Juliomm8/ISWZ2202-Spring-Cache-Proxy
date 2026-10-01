@@ -288,12 +288,31 @@ select:focus-visible {
 }
 
 .button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   border: 0;
   border-radius: 10px;
   padding: 10px 16px;
   font-weight: 700;
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
+
+.button::after {
+  position: absolute;
+  z-index: -1;
+  top: -40%;
+  left: -70%;
+  width: 42%;
+  height: 180%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.48), transparent);
+  content: '';
+  transform: skewX(-20deg);
+  transition: left 600ms ease;
+}
+
+.button:hover::after { left: 132%; }
+.button:active { transform: translateY(1px) scale(0.985); }
 
 .button-primary {
   color: #172554;
@@ -1386,6 +1405,17 @@ select:focus-visible {
   border-radius: 16px;
 }
 
+.modal-image-shell {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0) scale(0.985);
+  transition: opacity 360ms ease, transform 360ms ease;
+}
+
+.modal-image-shell.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
 .detail-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1493,6 +1523,8 @@ select:focus-visible {
   border-top: 1px solid var(--border);
   color: var(--text-secondary);
   font-size: 0.8rem;
+  animation: history-row-in 360ms ease both;
+  animation-delay: var(--history-delay, 0ms);
 }
 
 .history-row strong {
@@ -1514,6 +1546,17 @@ select:focus-visible {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes modal-out {
+  to { opacity: 0; transform: translate3d(0, 12px, 0) scale(0.98); }
+}
+
+@keyframes backdrop-out {
+  to { opacity: 0; }
+}
+
+.modal-backdrop.is-closing { animation: backdrop-out 220ms ease forwards; }
+.product-modal.is-closing { animation: modal-out 220ms ease forwards; }
 
 .empty-state,
 .error-state {
@@ -1623,8 +1666,9 @@ select:focus-visible {
 
 .skeleton {
   border-radius: 8px;
-  background: #e2e8f0;
-  animation: pulse 1.5s infinite;
+  background: linear-gradient(105deg, #e2e8f0 20%, #f8fafc 38%, #e2e8f0 56%);
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
 }
 
 .skeleton-icon {
@@ -1655,6 +1699,9 @@ select:focus-visible {
   margin-top: 28px;
 }
 
+.skeleton-title { width: 86%; }
+.skeleton-button { width: 42%; height: 30px; margin-top: 22px; margin-left: auto; border-radius: 9px; }
+
 .toast {
   position: fixed;
   z-index: 20;
@@ -1674,6 +1721,21 @@ select:focus-visible {
   backdrop-filter: blur(14px);
   animation: toast-in 220ms ease;
   font-size: 0.78rem;
+}
+
+.toast.is-closing { animation: toast-out 220ms ease forwards; }
+
+.toast-progress {
+  position: absolute;
+  right: 8px;
+  bottom: 5px;
+  left: 8px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--primary);
+  transform-origin: left;
+  animation: toast-life 3600ms linear forwards;
 }
 
 .toast-icon {
@@ -1705,6 +1767,32 @@ select:focus-visible {
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-out {
+  to { opacity: 0; transform: translate3d(0, 10px, 0) scale(0.97); }
+}
+
+@keyframes toast-life {
+  to { transform: scaleX(0); opacity: 0.3; }
+}
+
+@keyframes history-row-in {
+  from { opacity: 0; transform: translate3d(8px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes skeleton-shimmer {
+  to { background-position: -120% 0; }
+}
+
+.catalog-view {
+  animation: catalog-view-in 360ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+@keyframes catalog-view-in {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes chart-grow {

@@ -59,6 +59,8 @@ function App() {
     setToast({ id: Date.now(), message, type })
   }, [])
 
+  const dismissToast = useCallback(() => setToast(null), [])
+
   const loadProducts = useCallback(async () => {
     setLoading(true)
     setError('')
@@ -121,16 +123,7 @@ function App() {
 
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-
-    const closeOnEscape = (event) => {
-      if (event.key === 'Escape') {
-        setSelectedProduct(null)
-      }
-    }
-
-    window.addEventListener('keydown', closeOnEscape)
     return () => {
-      window.removeEventListener('keydown', closeOnEscape)
       document.body.style.overflow = previousOverflow
     }
   }, [selectedProduct])
@@ -276,7 +269,7 @@ function App() {
         onClose={() => setSelectedProduct(null)}
         onRefresh={() => loadProductDetails(selectedProduct.id)}
       />
-      <Toast toast={toast} onDismiss={() => setToast(null)} />
+      <Toast toast={toast} onDismiss={dismissToast} />
     </div>
   )
 }

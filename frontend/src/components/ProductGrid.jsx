@@ -23,14 +23,16 @@ function ProductGrid({ products, loading, viewMode, onViewDetails, onClearFilter
   }
 
   if (viewMode === 'table') {
-    return <ProductTable products={products} onViewDetails={onViewDetails} />
+    return <div className="catalog-view table-view"><ProductTable products={products} onViewDetails={onViewDetails} /></div>
   }
 
   return (
-    <div className="product-grid">
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} onViewDetails={onViewDetails} />
-      ))}
+    <div className="catalog-view cards-view">
+      <div className="product-grid">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} onViewDetails={onViewDetails} />
+        ))}
+      </div>
     </div>
   )
 }
