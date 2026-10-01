@@ -126,7 +126,7 @@ function App() {
     const result = await obtenerProductoPorId(id)
     const duration = Math.round(result.duration)
     setQueryHistory((currentHistory) => [
-      { id, nombre: result.data.nombre, duration },
+      { id, nombre: result.data.nombre, duration, timestamp: Date.now() },
       ...currentHistory,
     ].slice(0, 5))
     showToast('Consulta completada')

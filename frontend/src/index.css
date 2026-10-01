@@ -2929,3 +2929,284 @@ body {
     transition: none !important;
   }
 }
+
+/* Performance laboratory layout and measured comparison. */
+.performance-lab-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.performance-lab-heading h2 {
+  margin: 8px 0 0;
+  color: var(--text);
+  font-size: clamp(1.85rem, 4vw, 2.7rem);
+  letter-spacing: -0.035em;
+}
+
+.performance-lab-heading p {
+  margin: 9px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+.performance-lab .performance-layout {
+  grid-template-columns: minmax(290px, 0.8fr) minmax(0, 1.2fr);
+}
+
+.performance-lab .performance-card {
+  border-radius: 20px;
+}
+
+.performance-endpoint {
+  display: block;
+  overflow: hidden;
+  margin-top: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--surface) 72%, var(--background));
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.performance-last-result {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.performance-last-result span {
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.performance-last-result strong {
+  color: var(--text);
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  letter-spacing: -0.05em;
+}
+
+.performance-session-metrics {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.performance-session-metrics div {
+  min-width: 0;
+}
+
+.performance-session-metrics strong {
+  white-space: nowrap;
+}
+
+.flow-state-badge,
+.comparison-badge {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 9px;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--surface) 72%, var(--background));
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.flow-state-badge.is-running {
+  border-color: #a5b4fc;
+  color: var(--primary);
+  animation: status-breathe 900ms ease-in-out infinite;
+}
+
+.architecture-flow-wide {
+  gap: 6px;
+  margin-top: 22px;
+}
+
+.architecture-flow-wide .architecture-step {
+  min-height: 92px;
+  padding: 11px 9px;
+}
+
+.architecture-flow-wide .architecture-step strong {
+  font-size: 0.7rem;
+}
+
+.architecture-flow-wide .architecture-step small {
+  font-size: 0.58rem;
+}
+
+.architecture-flow-wide.is-running .architecture-step {
+  animation: flow-node-pulse 1s ease-in-out infinite;
+  animation-delay: var(--node-delay);
+}
+
+.architecture-flow-wide.has-result .architecture-step {
+  border-color: color-mix(in srgb, #818cf8 45%, var(--border));
+}
+
+.performance-comparison-card {
+  grid-column: 1 / -1;
+}
+
+.comparison-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  color: var(--text-secondary);
+}
+
+.comparison-empty span {
+  display: grid;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--primary);
+  background: #eef2ff;
+}
+
+.comparison-empty p {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.comparison-content {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.comparison-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.35fr) minmax(180px, 1fr);
+  align-items: center;
+  gap: 18px;
+}
+
+.comparison-row span,
+.comparison-row strong {
+  display: block;
+}
+
+.comparison-row span {
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+}
+
+.comparison-row strong {
+  margin-top: 3px;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.comparison-track {
+  height: 13px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border) 55%, transparent);
+}
+
+.comparison-track i {
+  display: block;
+  width: var(--comparison-width);
+  height: 100%;
+  border-radius: inherit;
+  animation: comparison-grow 700ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.comparison-track .is-first { background: linear-gradient(90deg, #f59e0b, #fb7185); }
+.comparison-track .is-repeated { background: linear-gradient(90deg, #34d399, #22d3ee); }
+
+.comparison-delta {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 5px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.comparison-delta span,
+.comparison-delta small {
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+}
+
+.comparison-delta strong { font-size: 1.1rem; }
+.comparison-delta strong.is-positive { color: #059669; }
+.comparison-delta strong.is-negative { color: #dc2626; }
+
+.history-timeline .chart-row {
+  grid-template-columns: 32px minmax(120px, 1fr) 72px 72px 72px;
+}
+
+.history-timeline .chart-row small {
+  color: var(--text-secondary);
+  font-size: 0.62rem;
+  text-align: right;
+}
+
+@keyframes flow-node-pulse {
+  0%, 100% { border-color: var(--border); box-shadow: none; transform: translateY(0); }
+  50% { border-color: #818cf8; box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.13); transform: translateY(-3px); }
+}
+
+@keyframes comparison-grow {
+  from { width: 0; }
+  to { width: var(--comparison-width); }
+}
+
+@keyframes status-breathe {
+  50% { opacity: 0.55; }
+}
+
+@media (max-width: 1100px) {
+  .architecture-flow-wide { flex-wrap: wrap; }
+  .architecture-flow-wide .architecture-step { min-width: 105px; }
+}
+
+@media (max-width: 640px) {
+  .performance-lab-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .performance-lab .performance-layout { grid-template-columns: 1fr; }
+  .performance-session-metrics { grid-template-columns: repeat(2, 1fr); }
+  .architecture-flow-wide { align-items: stretch; flex-direction: column; }
+  .architecture-flow-wide .architecture-step { min-width: 0; min-height: 70px; }
+  .architecture-flow-wide .flow-arrow { align-self: center; }
+  .history-timeline .chart-row { grid-template-columns: 28px minmax(0, 1fr) 62px; }
+  .history-timeline .speed-label,
+  .history-timeline .chart-row small { display: none; }
+  .comparison-row { grid-template-columns: 1fr; gap: 6px; }
+  .comparison-track { height: 10px; }
+  .comparison-delta { flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-state-badge.is-running,
+  .architecture-flow-wide .architecture-step,
+  .comparison-track i {
+    animation: none !important;
+  }
+}
