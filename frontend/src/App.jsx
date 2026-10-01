@@ -8,6 +8,7 @@ import ProductModal from './components/ProductModal.jsx'
 import Footer from './components/Footer.jsx'
 import PanelSection from './components/PanelSection.jsx'
 import PerformanceSection from './components/PerformanceSection.jsx'
+import Toast from './components/Toast.jsx'
 import { obtenerProductoPorId, obtenerProductos } from './services/productoService.js'
 
 function App() {
@@ -25,6 +26,11 @@ function App() {
   const [detailError, setDetailError] = useState('')
   const [queryHistory, setQueryHistory] = useState([])
   const [activeSection, setActiveSection] = useState('inicio')
+  const [toast, setToast] = useState(null)
+
+  const showToast = useCallback((message, type = 'success') => {
+    setToast({ id: Date.now(), message, type })
+  }, [])
 
   const loadProducts = useCallback(async () => {
     setLoading(true)
@@ -35,13 +41,15 @@ function App() {
       setProducts(result.data)
       setLastFetchDuration(Math.round(result.duration))
       setApiConnected(true)
+      showToast('Catálogo actualizado')
     } catch {
       setApiConnected(false)
       setError('No se pudo conectar con el backend.')
+      showToast('No se pudo conectar con el backend', 'error')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [showToast])
 
   useEffect(() => {
     loadProducts()
@@ -59,8 +67,9 @@ function App() {
       { id, nombre: result.data.nombre, duration },
       ...currentHistory,
     ].slice(0, 5))
+    showToast('Consulta completada')
     return result
-  }, [])
+  }, [showToast])
 
   const loadProductDetails = useCallback(async (id) => {
     const productInCatalog = products.find((product) => product.id === id)
@@ -196,6 +205,7 @@ function App() {
         onClose={() => setSelectedProduct(null)}
         onRefresh={() => loadProductDetails(selectedProduct.id)}
       />
+      <Toast toast={toast} onDismiss={() => setToast(null)} />
     </div>
   )
 }

@@ -1,18 +1,12 @@
 import ProductCard from './ProductCard.jsx'
 import ProductTable from './ProductTable.jsx'
+import SkeletonCard from './SkeletonCard.jsx'
 
 function ProductGrid({ products, loading, viewMode, onViewDetails, onClearFilters }) {
   if (loading) {
     return (
       <div className="product-grid" aria-label="Cargando productos">
-        {[1, 2, 3, 4, 5].map((item) => (
-          <div className="skeleton-card" key={item}>
-            <div className="skeleton skeleton-icon" />
-            <div className="skeleton skeleton-line short" />
-            <div className="skeleton skeleton-line" />
-            <div className="skeleton skeleton-line price" />
-          </div>
-        ))}
+        {[1, 2, 3, 4, 5].map((item) => <SkeletonCard key={item} />)}
       </div>
     )
   }
