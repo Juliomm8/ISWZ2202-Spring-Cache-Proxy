@@ -1,6 +1,7 @@
 import ProductCard from './ProductCard.jsx'
+import ProductTable from './ProductTable.jsx'
 
-function ProductGrid({ products, loading, onViewDetails }) {
+function ProductGrid({ products, loading, viewMode, onViewDetails, onClearFilters }) {
   if (loading) {
     return (
       <div className="product-grid" aria-label="Cargando productos">
@@ -22,8 +23,13 @@ function ProductGrid({ products, loading, onViewDetails }) {
         <span aria-hidden="true">⌕</span>
         <h3>No encontramos productos</h3>
         <p>Prueba con otra búsqueda o selecciona una categoría diferente.</p>
+        <button className="button button-secondary" type="button" onClick={onClearFilters}>Limpiar filtros</button>
       </div>
     )
+  }
+
+  if (viewMode === 'table') {
+    return <ProductTable products={products} onViewDetails={onViewDetails} />
   }
 
   return (

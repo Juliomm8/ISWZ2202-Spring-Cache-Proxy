@@ -16,6 +16,8 @@ function App() {
   const [lastFetchDuration, setLastFetchDuration] = useState(null)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('Todas')
+  const [sortOrder, setSortOrder] = useState('default')
+  const [viewMode, setViewMode] = useState('cards')
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [detailLoading, setDetailLoading] = useState(false)
   const [detailError, setDetailError] = useState('')
@@ -91,12 +93,26 @@ function App() {
 
   const filteredProducts = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase()
-    return products.filter((product) => {
+    const matches = products.filter((product) => {
       const matchesCategory = category === 'Todas' || product.categoria === category
       const matchesSearch = product.nombre.toLowerCase().includes(normalizedSearch)
       return matchesCategory && matchesSearch
     })
-  }, [category, products, search])
+
+    return [...matches].sort((first, second) => {
+      if (sortOrder === 'name-asc') return first.nombre.localeCompare(second.nombre)
+      if (sortOrder === 'name-desc') return second.nombre.localeCompare(first.nombre)
+      if (sortOrder === 'price-asc') return first.precio - second.precio
+      if (sortOrder === 'price-desc') return second.precio - first.precio
+      return first.id - second.id
+    })
+  }, [category, products, search, sortOrder])
+
+  const clearFilters = useCallback(() => {
+    setSearch('')
+    setCategory('Todas')
+    setSortOrder('default')
+  }, [])
 
   return (
     <div className="app-shell">
@@ -137,10 +153,15 @@ function App() {
                 search={search}
                 category={category}
                 categories={categories}
+                sortOrder={sortOrder}
+                viewMode={viewMode}
+                resultCount={filteredProducts.length}
                 onSearchChange={setSearch}
                 onCategoryChange={setCategory}
+                onSortChange={setSortOrder}
+                onViewChange={setViewMode}
               />
-              <ProductGrid products={filteredProducts} loading={loading} onViewDetails={loadProductDetails} />
+              <ProductGrid products={filteredProducts} loading={loading} viewMode={viewMode} onViewDetails={loadProductDetails} onClearFilters={clearFilters} />
             </>
           )}
         </section>
