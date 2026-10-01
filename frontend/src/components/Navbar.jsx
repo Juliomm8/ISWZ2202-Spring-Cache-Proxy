@@ -1,3 +1,5 @@
+import ThemeToggle from './ThemeToggle.jsx'
+
 const navItems = [
   { id: 'inicio', label: 'Inicio' },
   { id: 'catalogo', label: 'Catálogo' },
@@ -5,7 +7,7 @@ const navItems = [
   { id: 'panel', label: 'Panel' },
 ]
 
-function Navbar({ apiConnected, activeSection, onNavigate }) {
+function Navbar({ apiConnected, activeSection, onNavigate, isDark, onToggleTheme }) {
   return (
     <nav className="navbar" aria-label="Navegación principal">
       <div className="brand">
@@ -34,6 +36,7 @@ function Navbar({ apiConnected, activeSection, onNavigate }) {
           <span className="status-dot" />
           {apiConnected ? 'Backend conectado' : 'Backend desconectado'}
         </div>
+        <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
       </div>
     </nav>
   )

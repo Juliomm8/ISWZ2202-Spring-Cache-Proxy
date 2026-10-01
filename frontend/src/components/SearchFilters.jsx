@@ -7,7 +7,7 @@ function SearchFilters({ search, category, categories, sortOrder, viewMode, resu
         <label className="search-field">
           <span className="sr-only">Buscar producto</span>
           <span aria-hidden="true">⌕</span>
-          <input autoFocus type="search" placeholder="Buscar producto..." value={search} onChange={(event) => onSearchChange(event.target.value)} />
+          <input type="search" placeholder="Buscar producto..." value={search} onChange={(event) => onSearchChange(event.target.value)} />
         </label>
         <label className="select-field">
           <span className="sr-only">Filtrar por categoría</span>

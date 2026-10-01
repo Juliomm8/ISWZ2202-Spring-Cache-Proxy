@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 function speedLabel(duration) {
   if (duration > 500) return { label: 'Consulta lenta', className: 'is-slow' }
@@ -9,6 +9,12 @@ function speedLabel(duration) {
 function PerformanceSection({ products, history, onRunQuery }) {
   const [selectedId, setSelectedId] = useState(products[0]?.id ?? '')
   const [running, setRunning] = useState(false)
+
+  useEffect(() => {
+    if (!products.some((product) => product.id === Number(selectedId))) {
+      setSelectedId(products[0]?.id ?? '')
+    }
+  }, [products, selectedId])
 
   const selectedProduct = products.find((product) => product.id === Number(selectedId))
   const productHistory = useMemo(

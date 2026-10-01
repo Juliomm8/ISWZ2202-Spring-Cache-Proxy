@@ -12,6 +12,7 @@ import Toast from './components/Toast.jsx'
 import { obtenerProductoPorId, obtenerProductos } from './services/productoService.js'
 
 function App() {
+  const [theme, setTheme] = useState(() => window.localStorage.getItem('product-hub-theme') || 'light')
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -27,6 +28,11 @@ function App() {
   const [queryHistory, setQueryHistory] = useState([])
   const [activeSection, setActiveSection] = useState('inicio')
   const [toast, setToast] = useState(null)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    window.localStorage.setItem('product-hub-theme', theme)
+  }, [theme])
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ id: Date.now(), message, type })
@@ -153,7 +159,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      <Navbar apiConnected={apiConnected} activeSection={activeSection} onNavigate={navigateTo} />
+      <Navbar apiConnected={apiConnected} activeSection={activeSection} onNavigate={navigateTo} isDark={theme === 'dark'} onToggleTheme={() => setTheme((currentTheme) => currentTheme === 'dark' ? 'light' : 'dark')} />
       <main className="page-content">
         <section id="inicio" className="page-section hero-section">
           <Hero
