@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
+import useMagneticButton from '../hooks/useMagneticButton.js'
 
 function speedLabel(duration) {
   if (duration > 500) return { label: 'LENTA', className: 'is-slow' }
@@ -27,6 +28,7 @@ function PerformanceSection({ products, history, onRunQuery }) {
   const [selectedId, setSelectedId] = useState(products[0]?.id ?? '')
   const [running, setRunning] = useState(false)
   const [runState, setRunState] = useState('idle')
+  const queryButton = useMagneticButton(2)
 
   useEffect(() => {
     if (!products.some((product) => product.id === Number(selectedId))) {
@@ -93,7 +95,7 @@ function PerformanceSection({ products, history, onRunQuery }) {
             </select>
           </label>
           <code className="performance-endpoint">GET /api/productos/{selectedId || ':id'}</code>
-          <button className="button button-primary performance-button" type="button" onClick={executeTest} disabled={running || !selectedProduct}>
+          <button ref={queryButton.ref} className="button button-primary performance-button" type="button" onClick={executeTest} onPointerMove={queryButton.handlePointerMove} onPointerLeave={queryButton.reset} disabled={running || !selectedProduct}>
             {running ? <><span className="button-spinner" aria-hidden="true" /> Consultando...</> : 'Ejecutar consulta'} <span aria-hidden="true">→</span>
           </button>
           <div className="performance-last-result">

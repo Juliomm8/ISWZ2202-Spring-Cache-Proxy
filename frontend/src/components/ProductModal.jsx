@@ -43,6 +43,12 @@ function ProductModal({ product, loading, error, duration, history, onClose, onR
     window.setTimeout(onClose, 220)
   }
 
+  const relativeTime = (timestamp) => {
+    if (!timestamp) return 'ahora'
+    const seconds = Math.max(0, Math.round((Date.now() - timestamp) / 1000))
+    return seconds < 5 ? 'ahora' : `hace ${seconds} s`
+  }
+
   if (!product) {
     return null
   }
@@ -112,8 +118,8 @@ function ProductModal({ product, loading, error, duration, history, onClose, onR
           ) : (
             history.map((query, index) => (
               <div className="history-row" style={{ '--history-delay': `${index * 65}ms` }} key={`${query.id}-${query.duration}-${index}`}>
-                <span>Consulta {index + 1}</span>
-                <strong>{query.duration} ms</strong>
+                <span><b>{String(index + 1).padStart(2, '0')}</b> Consulta {index + 1}<small>{relativeTime(query.timestamp)}</small></span>
+                <strong>{query.duration} ms <em className={query.duration < 100 ? 'is-fast' : query.duration > 500 ? 'is-slow' : 'is-steady'}>{query.duration < 100 ? 'RÁPIDA' : query.duration > 500 ? 'LENTA' : 'ESTABLE'}</em></strong>
               </div>
             ))
           )}

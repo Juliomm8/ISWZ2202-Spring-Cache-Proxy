@@ -14,7 +14,7 @@ function ProductGrid({ products, loading, viewMode, onViewDetails, onClearFilter
   if (products.length === 0) {
     return (
       <div className="empty-state">
-        <span aria-hidden="true">⌕</span>
+        <span className="empty-state-icon" aria-hidden="true"><svg viewBox="0 0 64 64" role="presentation"><circle cx="28" cy="28" r="16" /><path d="m40 40 13 13" /><path d="M20 28h16M28 20v16" /></svg></span>
         <h3>No encontramos productos</h3>
         <p>Prueba con otra búsqueda o selecciona una categoría diferente.</p>
         <button className="button button-secondary" type="button" onClick={onClearFilters}>Limpiar filtros</button>

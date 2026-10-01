@@ -3483,6 +3483,89 @@ body {
   .simulation-bar-row i { animation: none !important; }
 }
 
+/* Final interaction pass. */
+.reveal {
+  filter: blur(4px);
+  transition: opacity 280ms ease var(--reveal-delay, 0ms), transform 280ms ease var(--reveal-delay, 0ms), filter 280ms ease var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible { filter: blur(0); }
+
+.empty-state-icon {
+  display: grid;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto;
+  place-items: center;
+  border: 1px solid #c7d2fe;
+  border-radius: 20px;
+  color: var(--primary);
+  background: #eef2ff;
+}
+
+.empty-state-icon svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.history-row > span {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.history-row > span b {
+  color: var(--primary);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+}
+
+.history-row > span small {
+  color: var(--text-secondary);
+  font-size: 0.62rem;
+}
+
+.history-row > strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.history-row em {
+  border-radius: 999px;
+  padding: 4px 6px;
+  font-size: 0.54rem;
+  font-style: normal;
+  letter-spacing: 0.04em;
+}
+
+.history-row em.is-fast { color: #047857; background: #d1fae5; }
+.history-row em.is-slow { color: #b45309; background: #fef3c7; }
+.history-row em.is-steady { color: var(--primary); background: #eef2ff; }
+
+[data-theme="dark"] .history-row em.is-fast { color: #6ee7b7; background: rgba(6, 78, 59, 0.38); }
+[data-theme="dark"] .history-row em.is-slow { color: #fbbf24; background: rgba(120, 53, 15, 0.38); }
+[data-theme="dark"] .history-row em.is-steady { background: rgba(49, 46, 129, 0.5); }
+
+@media (max-width: 640px) {
+  .history-row > span { flex-wrap: wrap; }
+  .history-row > span small { flex-basis: 100%; margin-left: 25px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.is-visible,
+  .history-row,
+  .button {
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
 /* Navigation and layout rhythm. */
 :root {
   --container-width: 1180px;

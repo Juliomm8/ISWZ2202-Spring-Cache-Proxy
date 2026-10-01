@@ -1,9 +1,12 @@
 import { useRef } from 'react'
+import useMagneticButton from '../hooks/useMagneticButton.js'
 
 function Hero({ onExplore, onPerformance, onStartDemo, onRefresh, loading, lastFetchDuration }) {
   const heroRef = useRef(null)
   const pointerRef = useRef({ x: 0, y: 0 })
   const frameRef = useRef(0)
+  const exploreButton = useMagneticButton(2.5)
+  const demoButton = useMagneticButton(2.5)
 
   const updateParallax = () => {
     frameRef.current = 0
@@ -46,10 +49,10 @@ function Hero({ onExplore, onPerformance, onStartDemo, onRefresh, loading, lastF
           {['Spring Boot', 'React', 'Cache', 'Proxy'].map((badge) => <span key={badge}>{badge}</span>)}
         </div>
         <div className="hero-actions hero-stagger hero-stagger-five">
-          <button className="button button-primary" type="button" onClick={onExplore}>
+          <button ref={exploreButton.ref} className="button button-primary" type="button" onClick={onExplore} onPointerMove={exploreButton.handlePointerMove} onPointerLeave={exploreButton.reset}>
             Explorar productos <span aria-hidden="true">→</span>
           </button>
-          <button className="button button-demo" type="button" onClick={onStartDemo}>
+          <button ref={demoButton.ref} className="button button-demo" type="button" onClick={onStartDemo} onPointerMove={demoButton.handlePointerMove} onPointerLeave={demoButton.reset}>
             Iniciar demo <span aria-hidden="true">✦</span>
           </button>
           <button className="button button-ghost" type="button" onClick={onPerformance}>
