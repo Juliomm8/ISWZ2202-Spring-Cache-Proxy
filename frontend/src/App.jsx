@@ -7,6 +7,7 @@ import ProductGrid from './components/ProductGrid.jsx'
 import ProductModal from './components/ProductModal.jsx'
 import Footer from './components/Footer.jsx'
 import PanelSection from './components/PanelSection.jsx'
+import PerformanceSection from './components/PerformanceSection.jsx'
 import { obtenerProductoPorId, obtenerProductos } from './services/productoService.js'
 
 function App() {
@@ -51,6 +52,16 @@ function App() {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
+  const runProductQuery = useCallback(async (id) => {
+    const result = await obtenerProductoPorId(id)
+    const duration = Math.round(result.duration)
+    setQueryHistory((currentHistory) => [
+      { id, nombre: result.data.nombre, duration },
+      ...currentHistory,
+    ].slice(0, 5))
+    return result
+  }, [])
+
   const loadProductDetails = useCallback(async (id) => {
     const productInCatalog = products.find((product) => product.id === id)
     setSelectedProduct(productInCatalog ?? { id, nombre: 'Producto', categoria: '—', precio: 0 })
@@ -58,19 +69,14 @@ function App() {
     setDetailError('')
 
     try {
-      const result = await obtenerProductoPorId(id)
-      const duration = Math.round(result.duration)
+      const result = await runProductQuery(id)
       setSelectedProduct(result.data)
-      setQueryHistory((currentHistory) => [
-        { id, nombre: result.data.nombre, duration },
-        ...currentHistory,
-      ].slice(0, 5))
     } catch {
       setDetailError('No se pudo consultar el detalle del producto.')
     } finally {
       setDetailLoading(false)
     }
-  }, [products])
+  }, [products, runProductQuery])
 
   useEffect(() => {
     if (!selectedProduct) {
@@ -167,9 +173,7 @@ function App() {
           )}
         </section>
         <section id="rendimiento" className="page-section placeholder-section">
-          <span className="eyebrow eyebrow-dark">Observabilidad</span>
-          <h2>Rendimiento</h2>
-          <p>Comprueba el comportamiento de las consultas y el caché del backend desde el detalle de cada producto.</p>
+          <PerformanceSection products={products} history={queryHistory} onRunQuery={runProductQuery} />
         </section>
         <section id="panel" className="page-section placeholder-section">
           <div className="section-heading panel-section-heading">
