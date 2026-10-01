@@ -9,6 +9,8 @@ import Footer from './components/Footer.jsx'
 import PanelSection from './components/PanelSection.jsx'
 import PerformanceSection from './components/PerformanceSection.jsx'
 import Toast from './components/Toast.jsx'
+import Reveal from './components/Reveal.jsx'
+import CursorGlow from './components/CursorGlow.jsx'
 import { obtenerProductoPorId, obtenerProductos } from './services/productoService.js'
 
 function App() {
@@ -159,70 +161,81 @@ function App() {
 
   return (
     <div className="app-shell">
+      <CursorGlow />
       <Navbar apiConnected={apiConnected} activeSection={activeSection} onNavigate={navigateTo} isDark={theme === 'dark'} onToggleTheme={() => setTheme((currentTheme) => currentTheme === 'dark' ? 'light' : 'dark')} />
       <main className="page-content">
         <section id="inicio" className="page-section hero-section">
-          <Hero
-            onExplore={() => navigateTo('catalogo')}
-            onPerformance={() => navigateTo('rendimiento')}
-            onRefresh={loadProducts}
-            loading={loading}
-            lastFetchDuration={lastFetchDuration}
-          />
-          <Stats
-            productCount={products.length}
-            categoryCount={categories.length}
-            apiConnected={apiConnected}
-            lastDuration={lastFetchDuration}
-          />
+          <Reveal className="hero-reveal">
+            <Hero
+              onExplore={() => navigateTo('catalogo')}
+              onPerformance={() => navigateTo('rendimiento')}
+              onRefresh={loadProducts}
+              loading={loading}
+              lastFetchDuration={lastFetchDuration}
+            />
+          </Reveal>
+          <Reveal className="stats-reveal" delay={120}>
+            <Stats
+              productCount={products.length}
+              categoryCount={categories.length}
+              apiConnected={apiConnected}
+              lastDuration={lastFetchDuration}
+            />
+          </Reveal>
         </section>
         <section id="catalogo" className="page-section catalog-section">
-          <div className="section-heading">
-            <div>
-              <span className="eyebrow eyebrow-dark">Colección disponible</span>
-              <h2>Explora el catálogo</h2>
+          <Reveal className="section-reveal">
+            <div className="section-heading">
+              <div>
+                <span className="eyebrow eyebrow-dark">Colección disponible</span>
+                <h2>Explora el catálogo</h2>
+              </div>
+              <span className="section-caption">Datos actualizados desde Spring Boot</span>
             </div>
-            <span className="section-caption">Datos actualizados desde Spring Boot</span>
-          </div>
-          {error ? (
-            <section className="error-state" role="alert">
-              <h2>{error}</h2>
-              <p>Verifica que el backend Spring Boot esté ejecutándose en el puerto 8080.</p>
-              <button className="button button-primary" type="button" onClick={loadProducts}>Reintentar conexión</button>
-            </section>
-          ) : (
-            <>
-              <SearchFilters
-                search={search}
-                category={category}
-                categories={categories}
-                sortOrder={sortOrder}
-                viewMode={viewMode}
-                resultCount={filteredProducts.length}
-                onSearchChange={setSearch}
-                onCategoryChange={setCategory}
-                onSortChange={setSortOrder}
-                onViewChange={setViewMode}
-              />
-              <ProductGrid products={filteredProducts} loading={loading} viewMode={viewMode} onViewDetails={loadProductDetails} onClearFilters={clearFilters} />
-            </>
-          )}
+            {error ? (
+              <section className="error-state" role="alert">
+                <h2>{error}</h2>
+                <p>Verifica que el backend Spring Boot esté ejecutándose en el puerto 8080.</p>
+                <button className="button button-primary" type="button" onClick={loadProducts}>Reintentar conexión</button>
+              </section>
+            ) : (
+              <>
+                <SearchFilters
+                  search={search}
+                  category={category}
+                  categories={categories}
+                  sortOrder={sortOrder}
+                  viewMode={viewMode}
+                  resultCount={filteredProducts.length}
+                  onSearchChange={setSearch}
+                  onCategoryChange={setCategory}
+                  onSortChange={setSortOrder}
+                  onViewChange={setViewMode}
+                />
+                <ProductGrid products={filteredProducts} loading={loading} viewMode={viewMode} onViewDetails={loadProductDetails} onClearFilters={clearFilters} />
+              </>
+            )}
+          </Reveal>
         </section>
         <section id="rendimiento" className="page-section placeholder-section">
-          <PerformanceSection products={products} history={queryHistory} onRunQuery={runProductQuery} />
+          <Reveal className="section-reveal">
+            <PerformanceSection products={products} history={queryHistory} onRunQuery={runProductQuery} />
+          </Reveal>
         </section>
         <section id="panel" className="page-section placeholder-section">
-          <div className="section-heading panel-section-heading">
-            <div>
-              <span className="eyebrow eyebrow-dark">Vista general</span>
-              <h2>Panel</h2>
+          <Reveal className="section-reveal">
+            <div className="section-heading panel-section-heading">
+              <div>
+                <span className="eyebrow eyebrow-dark">Vista general</span>
+                <h2>Panel</h2>
+              </div>
+              <span className="section-caption">Monitorea el catálogo sin modificar la API</span>
             </div>
-            <span className="section-caption">Monitorea el catálogo sin modificar la API</span>
-          </div>
-          <PanelSection products={products} onAnalyze={loadProductDetails} />
+            <PanelSection products={products} onAnalyze={loadProductDetails} />
+          </Reveal>
         </section>
       </main>
-      <Footer />
+      <Reveal className="footer-reveal"><Footer /></Reveal>
       <ProductModal
         product={selectedProduct}
         loading={detailLoading}
