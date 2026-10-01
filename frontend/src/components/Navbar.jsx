@@ -7,9 +7,9 @@ const navItems = [
   { id: 'panel', label: 'Panel' },
 ]
 
-function Navbar({ apiConnected, activeSection, onNavigate, isDark, onToggleTheme }) {
+function Navbar({ apiConnected, activeSection, onNavigate, isDark, onToggleTheme, isScrolled }) {
   return (
-    <nav className="navbar" aria-label="Navegación principal">
+    <nav className={`navbar ${isScrolled ? 'is-scrolled' : ''}`} aria-label="Navegación principal">
       <div className="brand">
         <button className="brand-button" type="button" onClick={() => onNavigate('inicio')} aria-label="Ir al inicio">
           <span className="brand-mark">P</span>

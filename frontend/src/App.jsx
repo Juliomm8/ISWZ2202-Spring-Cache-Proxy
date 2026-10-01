@@ -29,12 +29,31 @@ function App() {
   const [detailError, setDetailError] = useState('')
   const [queryHistory, setQueryHistory] = useState([])
   const [activeSection, setActiveSection] = useState('inicio')
+  const [isScrolled, setIsScrolled] = useState(false)
   const [toast, setToast] = useState(null)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     window.localStorage.setItem('product-hub-theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    let frameId = 0
+    const updateNavbar = () => {
+      frameId = 0
+      setIsScrolled(window.scrollY > 12)
+    }
+    const handleScroll = () => {
+      if (!frameId) frameId = window.requestAnimationFrame(updateNavbar)
+    }
+
+    updateNavbar()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (frameId) window.cancelAnimationFrame(frameId)
+    }
+  }, [])
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ id: Date.now(), message, type })
@@ -136,6 +155,16 @@ function App() {
     [products],
   )
 
+  const averagePrice = useMemo(
+    () => products.length ? products.reduce((total, product) => total + product.precio, 0) / products.length : 0,
+    [products],
+  )
+
+  const mostExpensivePrice = useMemo(
+    () => products.length ? Math.max(...products.map((product) => product.precio)) : 0,
+    [products],
+  )
+
   const filteredProducts = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase()
     const matches = products.filter((product) => {
@@ -162,7 +191,7 @@ function App() {
   return (
     <div className="app-shell">
       <CursorGlow />
-      <Navbar apiConnected={apiConnected} activeSection={activeSection} onNavigate={navigateTo} isDark={theme === 'dark'} onToggleTheme={() => setTheme((currentTheme) => currentTheme === 'dark' ? 'light' : 'dark')} />
+      <Navbar apiConnected={apiConnected} activeSection={activeSection} onNavigate={navigateTo} isDark={theme === 'dark'} isScrolled={isScrolled} onToggleTheme={() => setTheme((currentTheme) => currentTheme === 'dark' ? 'light' : 'dark')} />
       <main className="page-content">
         <section id="inicio" className="page-section hero-section">
           <Reveal className="hero-reveal">
@@ -178,6 +207,8 @@ function App() {
             <Stats
               productCount={products.length}
               categoryCount={categories.length}
+              averagePrice={averagePrice}
+              mostExpensivePrice={mostExpensivePrice}
               apiConnected={apiConnected}
               lastDuration={lastFetchDuration}
             />
